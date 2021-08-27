@@ -53,12 +53,7 @@ namespace PDF_Viewer
                 axAcroPDF1.src = openFileDialog.FileName;
                 documentName = openFileDialog.FileName;
 
-                string teste = documentName;
-
-
-                string[] names = teste.Split('\\');
-                //this.textBox2.Text = names.Length.ToString();
-                this.textBox2.Text = names[names.Length -1];
+                this.textBox2.Text = documentName.Substring(documentName.LastIndexOf(@"\") + 1, (documentName.Length - documentName.LastIndexOf(@"\") - 1));
 
             }
             else
