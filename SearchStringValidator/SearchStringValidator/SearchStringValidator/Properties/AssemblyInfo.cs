@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("PDF Viewer")]
+[assembly: AssemblyTitle("SearchStringValidator")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("PDF Viewer")]
+[assembly: AssemblyProduct("SearchStringValidator")]
 [assembly: AssemblyCopyright("Copyright ©  2021")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("2f0feb5c-3084-4232-9578-12910dc7d707")]
+[assembly: Guid("17623ef7-4179-4e7b-96b8-377d6b741c2c")]
 
 // Version information for an assembly consists of the following four values:
 //

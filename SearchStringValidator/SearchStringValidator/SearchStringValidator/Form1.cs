@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
+using System.Diagnostics;
 
-namespace PDF_Viewer
+namespace SearchStringValidator
 {
     public partial class Form1 : Form
     {
@@ -52,8 +53,9 @@ namespace PDF_Viewer
             {
                 axAcroPDF1.src = openFileDialog.FileName;
                 documentName = openFileDialog.FileName;
+                int documentNameIndex = documentName.LastIndexOf(@"\") + 1;
 
-                this.textBox2.Text = documentName.Substring(documentName.LastIndexOf(@"\") + 1, (documentName.Length - documentName.LastIndexOf(@"\") - 1));
+                this.textBox2.Text = documentName.Substring(documentNameIndex, (documentName.Length - documentNameIndex));
 
             }
             else
@@ -131,6 +133,14 @@ namespace PDF_Viewer
         {
             get { return textBox2.Text; }
             set { textBox2.Text = "teste"; }
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+            Debug.WriteLine("TESTE");
+            //this.label1.Text = "valor estranho";
+            //Form2 f = new Form2();
+            //f.ShowDialog();
         }
     }
 }
