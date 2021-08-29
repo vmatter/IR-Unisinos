@@ -17,6 +17,8 @@ namespace SearchStringHandler
             //searchStringCleaned = "\"(\"texto info\" banana and opcao)\"";
             //string searchString = "\"teste\"";
 
+            Console.WriteLine("\nsearchString --> " + searchString);
+
             //? Testar com o While depois.
             // while (true)
             // {
@@ -29,6 +31,8 @@ namespace SearchStringHandler
             //string searchString = Console.ReadLine();
             //string searchString = "(texto or info) or (a and b)";
             string searchStringCleaned = SearchStringUtils.CleanSearchString(searchString);
+
+            Console.WriteLine("\nsearchStringCleaned --> " + searchStringCleaned);
 
             // TODO: Pedir para o Marcio se tem como voltar ao início do programa estando dentro da classe.
 

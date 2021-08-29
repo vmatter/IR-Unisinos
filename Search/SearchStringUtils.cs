@@ -30,7 +30,15 @@ namespace SearchStringHandler
 
                 if (unicodeCategory != UnicodeCategory.NonSpacingMark)
                 {
-                    if (c == '\"' || c == '(' || c == ')' || Char.IsLetterOrDigit(c) || Char.IsWhiteSpace(c))
+                    if (c == '(')
+                    {
+                        textCleaned += c + " ";
+                    }
+                    else if (c == ')')
+                    {
+                        textCleaned += " " + c;
+                    }
+                    else if (c == '\"' || Char.IsLetterOrDigit(c) || Char.IsWhiteSpace(c))
                     {
                         textCleaned += c;
                     }
@@ -53,44 +61,22 @@ namespace SearchStringHandler
             Stack<string> searchStringHandlerStack = new Stack<string>();
             Stack<string> searchStringTokenizedStack = new Stack<string>();
 
-            Console.WriteLine("\n" + searchStringCleaned);
-
             string[] stringValidator = searchStringCleaned.Split(" ");
 
             List<string> andListTest = new List<string>();
 
-            int qtdParentheses = 0;
             bool hasQuotation = false;
-            bool closeParentheses = false;
             string quotationString = "";
-            string stringBeforeParentheses = "";
             string searchWord = "";
+
+            Console.WriteLine("\n[" + string.Join(", ", stringValidator) + "]\n");
 
             foreach (string word in stringValidator)
             {
                 searchWord = word;
-                if (areValidParentheses)
-                {
-
-                    if (searchWord[0] == '(')
-                    {
-                        // TODO: For se não criar split.
-                        closeParentheses = false;
-                        qtdParentheses++;
-                        searchStringHandlerStack.Push("(");
-                        searchWord = word.Substring(1);
-                    }
-                    else if (searchWord[searchWord.Length - 1] == ')')
-                    {
-                        // TODO: For se não criar split.
-                        closeParentheses = true;
-                        stringBeforeParentheses = searchWord.Remove(searchWord.Length - 1);
-                    }
-                }
 
                 if (searchWord[0] == '\"')
                 {
-                    // TODO: For se não criar split.
                     hasQuotation = true;
                     quotationString = searchWord;
                     continue;
@@ -104,12 +90,12 @@ namespace SearchStringHandler
                     }
                     else
                     {
-                        quotationString += searchWord;
+                        quotationString += " " + searchWord;
                         continue;
                     }
                 }
 
-                if ((searchWord != "and" && searchWord != "or") && (searchStringHandlerStack.Peek() != "and" && searchStringHandlerStack.Peek() != "or" && searchStringHandlerStack.Peek() != "(" && searchStringHandlerStack.Peek() != ")") && !hasQuotation)
+                if ((searchStringHandlerStack.Count != 0) && (searchWord != "and" && searchWord != "or") && (searchStringHandlerStack.Peek() != "and" && searchStringHandlerStack.Peek() != "or" && searchStringHandlerStack.Peek() != "(" && searchStringHandlerStack.Peek() != ")") && !hasQuotation)
                 {
                     searchStringHandlerStack.Push("and");
                     searchStringHandlerStack.Push(searchWord);
@@ -121,12 +107,6 @@ namespace SearchStringHandler
                         searchStringHandlerStack.Push(quotationString);
                         hasQuotation = false;
                         quotationString = "";
-                    }
-                    else if (closeParentheses)
-                    {
-                        searchStringHandlerStack.Push(stringBeforeParentheses);
-                        searchStringHandlerStack.Push(")");
-                        closeParentheses = false;
                     }
                     else
                     {
@@ -359,7 +339,7 @@ namespace SearchStringHandler
         #endregion
 
         // TODO: Se der tempo criar um split com separador. Adicionar validações.
-        private static char[] SplitWithSeparator(string stringToSplit) 
+        private static char[] SplitWithSeparator(string stringToSplit)
         {
             //stringToSplit.Split
             //char[] splits = new char
