@@ -74,6 +74,7 @@ namespace SearchStringHandler
 
                     if (searchWord[0] == '(')
                     {
+                        // TODO: For se não criar split.
                         closeParentheses = false;
                         qtdParentheses++;
                         searchStringHandlerStack.Push("(");
@@ -81,6 +82,7 @@ namespace SearchStringHandler
                     }
                     else if (searchWord[searchWord.Length - 1] == ')')
                     {
+                        // TODO: For se não criar split.
                         closeParentheses = true;
                         stringBeforeParentheses = searchWord.Remove(searchWord.Length - 1);
                     }
@@ -88,6 +90,7 @@ namespace SearchStringHandler
 
                 if (searchWord[0] == '\"')
                 {
+                    // TODO: For se não criar split.
                     hasQuotation = true;
                     quotationString = searchWord;
                     continue;
@@ -354,6 +357,14 @@ namespace SearchStringHandler
             return areValidParentheses;
         }
         #endregion
+
+        // TODO: Se der tempo criar um split com separador.
+        private static char[] SplitWithSeparator(string stringToSplit) 
+        {
+            //stringToSplit.Split
+            //char[] splits = new char
+            return new char[2];
+        }
 
     }
 
