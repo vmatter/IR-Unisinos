@@ -358,7 +358,7 @@ namespace SearchStringHandler
         }
         #endregion
 
-        // TODO: Se der tempo criar um split com separador.
+        // TODO: Se der tempo criar um split com separador. Adicionar validações.
         private static char[] SplitWithSeparator(string stringToSplit) 
         {
             //stringToSplit.Split
