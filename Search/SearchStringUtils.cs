@@ -95,7 +95,7 @@ namespace SearchStringHandler
                     }
                 }
 
-                if ((searchStringHandlerStack.Count != 0) && (searchWord != "and" && searchWord != "or") && (searchStringHandlerStack.Peek() != "and" && searchStringHandlerStack.Peek() != "or" && searchStringHandlerStack.Peek() != "(" && searchStringHandlerStack.Peek() != ")") && !hasQuotation)
+                if ((searchStringHandlerStack.Count != 0) && (searchWord != "and" && searchWord != "or") && (searchWord != "(" && searchWord != ")") && (searchStringHandlerStack.Peek() != "and" && searchStringHandlerStack.Peek() != "or" && searchStringHandlerStack.Peek() != "(" && searchStringHandlerStack.Peek() != ")") && !hasQuotation)
                 {
                     searchStringHandlerStack.Push("and");
                     searchStringHandlerStack.Push(searchWord);
@@ -128,53 +128,50 @@ namespace SearchStringHandler
         }
 
         #region SearchTokensInPdf
-        public static void SearchTokensInPDF(string filePath, string searchString, int contQuery)
+        public static Dictionary<string, int> SearchTokensInPDF(Stack<string> searchStringTokens, string filePath)
         {
-            string searchStringCleaned = CleanSearchString(searchString);
-            //TokenizeSearchString(searchStringCleaned);
 
-            /*using (PdfReader reader = new PdfReader(@filePath))
+
+            // using (PdfReader reader = new PdfReader(@filePath))
+            // {
+            //     var texto = new System.Text.StringBuilder();
+
+            // [0] == desenvolvimento , [1] = aplicacao
+
+            // projeto,projeto não
+
+            /* using StreamWriter file = new(@"E:\vitor_desktop\iCybersec\C#\Trabalho I\Busca-por-strings-em-documentos\testes\text55.txt");
             {
-                var texto = new System.Text.StringBuilder();
-
-                // [0] == desenvolvimento , [1] = aplicacao
-
-                // projeto,projeto não
-
-                /*using StreamWriter file = new(@"E:\vitor_desktop\iCybersec\C#\Trabalho I\Busca-por-strings-em-documentos\testes\text55.txt");
+                file.WriteLine($"*****************************************");
+                for (int i = 1; i <= reader.NumberOfPages; i++)
                 {
-                    file.WriteLine($"*****************************************");
-                    for (int i = 1; i <= reader.NumberOfPages; i++)
+                    string aux = PdfTextExtractor.GetTextFromPage(reader, i);
+                    string[] linhas = aux.Split('\n');
+                    foreach (string linha in linhas)
                     {
-                        string aux = PdfTextExtractor.GetTextFromPage(reader, i);
-                        string[] linhas = aux.Split('\n');
-                        foreach (string linha in linhas)
+
+                        foreach (string word in searchStringCleaned)
                         {
-
-                            foreach (string word in searchStringCleaned)
+                            if (linha.Contains(@"" + word))
                             {
-                                if (linha.Contains(@"" + word))
-                                {
-                                    texto.Append($"{word}{"\n"}");
-                                    file.WriteLine(word);
+                                texto.Append($"{word}{"\n"}");
+                                file.WriteLine(word);
 
-                                }
                             }
                         }
                     }
-                    file.WriteLine($"*****************************************");
-                    Console.WriteLine(texto);
                 }
-
+                file.WriteLine($"*****************************************");
+                Console.WriteLine(texto);
             } */
+
+            //}
             //contQuery++;
             //ShowHistoryReport(contQuery, filePath, searchString, ocurrences);
 
-            Environment.Exit(0);
+            //Environment.Exit(0);
 
-            Console.WriteLine("\nSearch String --> " + searchStringCleaned);
-
-            Dictionary<string, int> ocurrences = new Dictionary<string, int>();
+            Dictionary<string, int> searchTokensdictionary = new Dictionary<string, int>();
 
             List<string> listOfAND = new List<string>();
             List<string> listOfOR = new List<string>();
@@ -190,59 +187,59 @@ namespace SearchStringHandler
             // ["(, "texto and info" ,), "or" , "(", "a and b", ")"] 
 
             //string text = "Um texto contendo desenvolvimento, validacao";
-            bool valid = false;
+            //bool valid = false;
             //["desenvolvimento and aplicacao and teste or valor or verdade"]
 
-            if (searchStringCleaned.Contains(" and "))
+            /*  if (searchStringCleaned.Contains(" and "))
+             {
+
+                 listAll = searchStringCleaned.Split(" and ").ToList();
+                 listOfAND = listAll.ToList();
+
+                 //Console.WriteLine("\ntext --> " + text);
+                 //Console.WriteLine("\nlistAll --> [" + string.Join(", ", listAll) + "]\n");
+                 foreach (string item in listAll)
+                 {
+                     if (item.Contains("or"))
+                     {
+                         listOfOR.AddRange(item.Split(" or "));
+                         foreach (string val in listOfOR)
+                         { */
+            // OR condition
+            /* if (text.Contains(val))
             {
+                valid = true;
+            } */
 
-                listAll = searchStringCleaned.Split(" and ").ToList();
-                listOfAND = listAll.ToList();
+            // AND condition
+            /* if (text.Contains(val))
+            {
+                valid = true;
+            } else 
+            {
+                valid = false;
+            }  */
+            //Console.WriteLine(val);
+            //}
+            //listOfAND.Remove(item);
+            //listOfAND.Remove(item);
+            //Console.WriteLine("isValid --> " + valid);
+            //}
+            //Console.WriteLine("\nlistOfOR --> [" + string.Join(", ", listOfOR) + "]\n");
+            //}
 
-                //Console.WriteLine("\ntext --> " + text);
-                //Console.WriteLine("\nlistAll --> [" + string.Join(", ", listAll) + "]\n");
-                foreach (string item in listAll)
-                {
-                    if (item.Contains("or"))
-                    {
-                        listOfOR.AddRange(item.Split(" or "));
-                        foreach (string val in listOfOR)
-                        {
-                            // OR condition
-                            /* if (text.Contains(val))
-                            {
-                                valid = true;
-                            } */
+            // (desenvolvimento or aplicacao) and (teste or validacao or vacina)
+            // busca primeira lista de or
+            // busca segunda lista de or
+            // compara o and
 
-                            // AND condition
-                            /* if (text.Contains(val))
-                            {
-                                valid = true;
-                            } else 
-                            {
-                                valid = false;
-                            }  */
-                            //Console.WriteLine(val);
-                        }
-                        //listOfAND.Remove(item);
-                        //listOfAND.Remove(item);
-                        //Console.WriteLine("isValid --> " + valid);
-                    }
-                    //Console.WriteLine("\nlistOfOR --> [" + string.Join(", ", listOfOR) + "]\n");
-                }
-
-                // (desenvolvimento or aplicacao) and (teste or validacao or vacina)
-                // busca primeira lista de or
-                // busca segunda lista de or
-                // compara o and
-
-                /* if (listOfAND.Contains("or"))
-                {
-                    listOfAND.Remove
-                } */
+            /* if (listOfAND.Contains("or"))
+            {
+                listOfAND.Remove
+            } */
 
 
-            }
+            //}
 
             /* if (searchStringCleaned.Contains("or")) 
             {
@@ -273,9 +270,9 @@ namespace SearchStringHandler
             //string[] splits = searchStringCleaned.Split(new string[] { " or ", " and " }, StringSplitOptions.TrimEntries);
 
             //Console.WriteLine("\n-------------------------------------------------------");
-            Console.WriteLine("\nlistAll --> [" + string.Join(", ", listAll) + "]\n");
+            /* Console.WriteLine("\nlistAll --> [" + string.Join(", ", listAll) + "]\n");
             Console.WriteLine("\nlistOfAND --> [" + string.Join(", ", listOfAND) + "]\n");
-            Console.WriteLine("\nlistOfOR --> [" + string.Join(", ", listOfOR) + "]\n");
+            Console.WriteLine("\nlistOfOR --> [" + string.Join(", ", listOfOR) + "]\n"); */
 
             // [stringBusca][stringType]
             // [key][value]
@@ -285,21 +282,48 @@ namespace SearchStringHandler
             // pos 2 --> "banana, maca, pera", ["and"]
 
             // if contains pos1 || contains pos2
-
+            return searchTokensdictionary;
 
         }
         #endregion
 
         #region GenerateReport
-        public static void GenerateReport(int contQuery, string filePath, string searchString, Dictionary<string, int> occurrences)
+        public static void GenerateReport(int contQuery, string filePath, string searchString, Dictionary<string, int> searchTokensdictionary)
         {
             int fileNameIndex = filePath.LastIndexOf(@"\") + 1;
 
             string fileName = filePath.Substring(fileNameIndex, (filePath.Length - fileNameIndex));
 
-            Console.WriteLine(fileName);
+            searchTokensdictionary = new Dictionary<string, int>();
 
+            searchTokensdictionary.Add("desenvolvimento", 1);
+            searchTokensdictionary.Add("aplicação", 3);
 
+            var report = new StringBuilder();
+
+            var occurrences = new StringBuilder();
+
+            report.AppendLine("*****************************************");
+            report.AppendLine($"Número da consulta: {contQuery}");
+            report.AppendLine($"Nome do documento: {fileName}");
+            report.AppendLine($"String de busca: {searchString}");
+
+            var lastToken = searchTokensdictionary.Last();
+
+            foreach (var token in searchTokensdictionary)
+            {
+                if (!token.Equals(lastToken)) 
+                {
+                    occurrences.Append($"{token.Key}({token.Value}), ");
+                } else 
+                {
+                    occurrences.Append($"{token.Key}({token.Value})");
+                }
+            }
+            report.AppendLine($"Ocorrências: {occurrences}");
+            report.AppendLine("*****************************************");
+
+            Console.WriteLine("\n" + report);
         }
         #endregion
 
@@ -309,9 +333,11 @@ namespace SearchStringHandler
             int countOpenParentheses = 0;
             int countClosedParentheses = 0;
 
+            // TODO: Validar se a string for vazia.
+
             if (searchStringCleaned[0] == '\"' && searchStringCleaned[searchStringCleaned.Length - 1] == '\"')
             {
-                throw new InvalidOperationException("String de busca está toda entre aspas.");
+                throw new InvalidOperationException("\nString de busca está toda entre aspas.");
             }
 
             if (searchStringCleaned.Length > 0)
@@ -322,12 +348,12 @@ namespace SearchStringHandler
             }
             else
             {
-                throw new InvalidOperationException("String de busca está vazia.");
+                throw new InvalidOperationException("\nString de busca está vazia.");
             }
 
             if ((countOpenParentheses - countClosedParentheses) != 0)
             {
-                throw new InvalidOperationException("String de busca apresenta parênteses irregulares.");
+                throw new InvalidOperationException("\nString de busca apresenta parênteses irregulares.");
             }
             else
             {
