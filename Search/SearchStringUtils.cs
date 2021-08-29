@@ -9,8 +9,9 @@ using iTextSharp.text.pdf.parser;
 
 namespace SearchStringHandler
 {
-    //TODO: Documentar.
-    public static class Utils
+    // TODO: Documentar.
+    // TODO: Criar uma função de split que mantém o separador.
+    public static class SearchStringUtils
     {
         #region CleanSearchString
         /*
@@ -65,13 +66,12 @@ namespace SearchStringHandler
             string stringBeforeParentheses = "";
             string searchWord = "";
 
-            // TODO: Verificar o hasQuotation para os parênteses
-
             foreach (string word in stringValidator)
             {
                 searchWord = word;
                 if (areValidParentheses)
                 {
+
                     if (searchWord[0] == '(')
                     {
                         closeParentheses = false;
