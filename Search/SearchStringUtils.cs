@@ -56,12 +56,12 @@ namespace SearchStringHandler
         //* Method responsible for tokenizing the search string.
         // @see https://stackoverflow.com/questions/16265247/printing-all-contents-of-array-in-c-sharp
         //Console.WriteLine("\n[" + string.Join(", ", splits) + "]\n");
-        public static List<string> TokenizeSearchString(string searchStringCleaned, bool areValidParentheses)
+        public static List<string> TokenizeSearchString(string searchStringCleaned)
         {
 
             List<string> searchStringHandlerList = new List<string>();
 
-            string[] stringValidator = searchStringCleaned.Split(" ");
+            string[] stringValidator = searchStringCleaned.Trim().Split(" ");
 
             bool hasQuotation = false;
             string quotationString = "";
@@ -81,14 +81,10 @@ namespace SearchStringHandler
                 }
                 else if (hasQuotation)
                 {
-                    if (searchWord[searchWord.Length - 1] == '\"')
-                    {
+                    quotationString += " " + searchWord;
 
-                        quotationString += " " + searchWord;
-                    }
-                    else
+                    if (searchWord[searchWord.Length - 1] != '\"')
                     {
-                        quotationString += " " + searchWord;
                         continue;
                     }
                 }
@@ -118,17 +114,17 @@ namespace SearchStringHandler
             return searchStringHandlerList;
         }
 
-        #region SearchTokensInPdf
-        public static Dictionary<string, int> SearchTokensInPDF(List<string> searchStringTokens, string filePath)
+        #region SeparateExpressions
+        public static List<List<string>> SeparateExpressions(List<string> searchStringTokens)
         {
-            Dictionary<string, int> searchTokensdictionary = new Dictionary<string, int>();
-
             string regexString = string.Join(" ", searchStringTokens);
 
             Console.WriteLine("regexString --> " + regexString);
 
             List<string> regexResult = new List<string>();
 
+            // @"\([^\()]+\)"
+            // regexMatch.Value[1..(regexMatch.Value.Count()-1)].Trim()
             string pattern = @"\(([^\()]+)\)";
 
             while (Regex.Match(regexString, pattern, RegexOptions.IgnoreCase).Success)
@@ -140,11 +136,9 @@ namespace SearchStringHandler
                     regexString = regexString.Remove(0, indexRegexString);
                 }
                 Match regexMatch = Regex.Match(regexString, pattern, RegexOptions.IgnoreCase);
-                Console.WriteLine("Found '{0}' at position {1}.", regexMatch.Value, regexMatch.Index);
-                regexResult.Add(regexMatch.Value);
+                regexResult.Add(regexMatch.Groups[1].Value.Trim());
                 int initialMatch = regexString.IndexOf(regexMatch.Value);
                 regexString = regexString.Remove(initialMatch, regexMatch.Value.Count());
-                //Console.WriteLine("regexString --> " + regexString);
             }
 
             if (regexString != "")
@@ -152,23 +146,52 @@ namespace SearchStringHandler
                 regexResult.Add(regexString);
             }
 
-            Console.WriteLine("regexResult --> [" + string.Join(",", regexResult) + "]");
+            Console.WriteLine("regexResult --> [" + string.Join(", ", regexResult) + "]");
 
-            string text = "texto e a";
+            //string text = "texto e a";
+
+            List<List<string>> tokenizedValidation = new List<List<string>>();
 
             foreach (var validation in regexResult)
             {
-                // TODO: revisar TokenizeSearchString.
-                List<string> tokenizedValidation = TokenizeSearchString(validation,true);
+                tokenizedValidation.Add(TokenizeSearchString(validation));
+            }
+
+            StringBuilder tokenizedValidationStrings = new StringBuilder();
+
+            // TODO: Remover depois.
+            var lastToken = tokenizedValidation.Last();
+            foreach (var item in tokenizedValidation)
+            {
+                if (!item.Equals(lastToken))
+                {
+                    tokenizedValidationStrings.Append((string.Join(" ", item)) + ", ");
+                }
+                else
+                {
+                    tokenizedValidationStrings.Append((string.Join(" ", item)));
+                }
+                //Console.WriteLine("\ntokenizedValidation --> [" + string.Join(", ", item) + "]");
+            }
+            Console.WriteLine("\ntokenizedValidation --> [" + tokenizedValidationStrings + "]");
+            return tokenizedValidation;
+        }
+        #endregion
+
+
+        #region SearchTokensInPdf
+        public static Dictionary<string, int> SearchTokensInPDF(List<List<string>> searchStringTokens, string filePath)
+        {
+            Dictionary<string, int> searchTokensdictionary = new Dictionary<string, int>();
+
+            foreach (var sentence in searchStringTokens)
+            {
+
             }
 
             Environment.Exit(0);
 
-            List<List<string>> groups = new List<List<string>>();
 
-            
-
-            Environment.Exit(0);
 
             return searchTokensdictionary;
         }
@@ -251,14 +274,6 @@ namespace SearchStringHandler
             return areValidParentheses;
         }
         #endregion
-
-        // TODO: Se der tempo criar um split com separador. Adicionar validações.
-        private static char[] SplitWithSeparator(string stringToSplit)
-        {
-            //stringToSplit.Split
-            //char[] splits = new char
-            return new char[2];
-        }
 
     }
 

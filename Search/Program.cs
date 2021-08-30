@@ -13,7 +13,7 @@ namespace SearchStringHandler
             //string searchString = "@@#((\"Classificação''' :::;';'';'~~de ;'';'~~Texto\"!@#$%$%@ OR##@! !@#!@#Classificação ;'';'~~de ;'';'~~Informação);'';'~~ AND PLN)";
             string searchString = "(texto or info) and (a or b)";
             //string searchString = "desenvolvimento AND aplicação";
-            // string searchString = "(\"texto info\" banana and opcao)";
+            //string searchString = "(\"texto info\" banana and opcao)";
             //string searchString = "\"(\"texto info\" banana and opcao)\"";
             //string searchString = "\"teste\"";
 
@@ -25,7 +25,6 @@ namespace SearchStringHandler
             int contQuery = 0;
             int count = 0;
             int maxTries = 3;
-            bool areValidParentheses = false;
 
             //? Testar com o While depois.
             /* while (true)
@@ -42,7 +41,7 @@ namespace SearchStringHandler
             // While
             try
             {
-                areValidParentheses = SearchStringUtils.ValidateStringConditions(searchStringCleaned);
+                SearchStringUtils.ValidateStringConditions(searchStringCleaned);
             }
             catch (System.Exception exception)
             {
@@ -50,9 +49,11 @@ namespace SearchStringHandler
                 if (++count == maxTries) throw exception;
             }
 
-            List<string> searchStringTokens = SearchStringUtils.TokenizeSearchString(searchStringCleaned, areValidParentheses);
+            List<string> searchStringTokens = SearchStringUtils.TokenizeSearchString(searchStringCleaned);
 
-            Dictionary<string, int> searchTokensdictionary = SearchStringUtils.SearchTokensInPDF(searchStringTokens, filePath);
+            List<List<string>> tokenizedValidation = SearchStringUtils.SeparateExpressions(searchStringTokens);
+
+            Dictionary<string, int> searchTokensdictionary = SearchStringUtils.SearchTokensInPDF(tokenizedValidation, filePath);
 
             SearchStringUtils.GenerateReport(++contQuery, filePath, searchString, searchTokensdictionary);
             /* } */
