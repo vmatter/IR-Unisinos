@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using iTextSharp.text.pdf;
 using iTextSharp.text.pdf.parser;
+using System.Text.RegularExpressions;
 
 namespace SearchStringHandler
 {
@@ -55,15 +56,12 @@ namespace SearchStringHandler
         //* Method responsible for tokenizing the search string.
         // @see https://stackoverflow.com/questions/16265247/printing-all-contents-of-array-in-c-sharp
         //Console.WriteLine("\n[" + string.Join(", ", splits) + "]\n");
-        public static Stack<string> TokenizeSearchString(string searchStringCleaned, bool areValidParentheses)
+        public static List<string> TokenizeSearchString(string searchStringCleaned, bool areValidParentheses)
         {
 
-            Stack<string> searchStringHandlerStack = new Stack<string>();
-            Stack<string> searchStringTokenizedStack = new Stack<string>();
+            List<string> searchStringHandlerList = new List<string>();
 
             string[] stringValidator = searchStringCleaned.Split(" ");
-
-            List<string> andListTest = new List<string>();
 
             bool hasQuotation = false;
             string quotationString = "";
@@ -95,195 +93,84 @@ namespace SearchStringHandler
                     }
                 }
 
-                if ((searchStringHandlerStack.Count != 0) && (searchWord != "and" && searchWord != "or") && (searchWord != "(" && searchWord != ")") && (searchStringHandlerStack.Peek() != "and" && searchStringHandlerStack.Peek() != "or" && searchStringHandlerStack.Peek() != "(" && searchStringHandlerStack.Peek() != ")") && !hasQuotation)
+                if ((searchStringHandlerList.Count != 0) && (searchWord != "and" && searchWord != "or") && (searchWord != "(" && searchWord != ")") && (searchStringHandlerList.Last() != "and" && searchStringHandlerList.Last() != "or" && searchStringHandlerList.Last() != "(" && searchStringHandlerList.Last() != ")") && !hasQuotation)
                 {
-                    searchStringHandlerStack.Push("and");
-                    searchStringHandlerStack.Push(searchWord);
+                    searchStringHandlerList.Add("and");
+                    searchStringHandlerList.Add(searchWord);
                 }
                 else
                 {
                     if (hasQuotation)
                     {
-                        searchStringHandlerStack.Push(quotationString);
+                        searchStringHandlerList.Add(quotationString);
                         hasQuotation = false;
                         quotationString = "";
                     }
                     else
                     {
-                        searchStringHandlerStack.Push(searchWord);
+                        searchStringHandlerList.Add(searchWord);
                     }
                 }
             }
 
-            Console.WriteLine("\nstackTest --> [" + string.Join(", ", searchStringHandlerStack) + "]");
+            Console.WriteLine("\nsearchStringHandlerList --> [" + string.Join(", ", searchStringHandlerList) + "]");
 
-            foreach (string word in searchStringHandlerStack)
-            {
-                searchStringTokenizedStack.Push(word);
-            }
-
-            Console.WriteLine("\nstackPrint --> [" + string.Join(", ", searchStringTokenizedStack) + "]");
-
-            return searchStringTokenizedStack;
+            return searchStringHandlerList;
         }
 
         #region SearchTokensInPdf
-        public static Dictionary<string, int> SearchTokensInPDF(Stack<string> searchStringTokens, string filePath)
+        public static Dictionary<string, int> SearchTokensInPDF(List<string> searchStringTokens, string filePath)
         {
-
-
-            // using (PdfReader reader = new PdfReader(@filePath))
-            // {
-            //     var texto = new System.Text.StringBuilder();
-
-            // [0] == desenvolvimento , [1] = aplicacao
-
-            // projeto,projeto não
-
-            /* using StreamWriter file = new(@"E:\vitor_desktop\iCybersec\C#\Trabalho I\Busca-por-strings-em-documentos\testes\text55.txt");
-            {
-                file.WriteLine($"*****************************************");
-                for (int i = 1; i <= reader.NumberOfPages; i++)
-                {
-                    string aux = PdfTextExtractor.GetTextFromPage(reader, i);
-                    string[] linhas = aux.Split('\n');
-                    foreach (string linha in linhas)
-                    {
-
-                        foreach (string word in searchStringCleaned)
-                        {
-                            if (linha.Contains(@"" + word))
-                            {
-                                texto.Append($"{word}{"\n"}");
-                                file.WriteLine(word);
-
-                            }
-                        }
-                    }
-                }
-                file.WriteLine($"*****************************************");
-                Console.WriteLine(texto);
-            } */
-
-            //}
-            //contQuery++;
-            //ShowHistoryReport(contQuery, filePath, searchString, ocurrences);
-
-            //Environment.Exit(0);
-
             Dictionary<string, int> searchTokensdictionary = new Dictionary<string, int>();
 
-            List<string> listOfAND = new List<string>();
-            List<string> listOfOR = new List<string>();
-            List<string> listAll = new List<string>();
+            string regexString = string.Join(" ", searchStringTokens);
 
-            //Environment.Exit(0);
-            //Console.WriteLine("\nstackTest --> [" + string.Join(", ", stackTest) + "]\n");
+            Console.WriteLine("regexString --> " + regexString);
 
-            //Environment.Exit(0);
+            List<string> regexResult = new List<string>();
 
-            // [(, desenvolvimento, and, aplicacao, ), and, (, teste, or, validacao, or vacina, )]
+            string pattern = @"\(([^\()]+)\)";
 
-            // ["(, "texto and info" ,), "or" , "(", "a and b", ")"] 
-
-            //string text = "Um texto contendo desenvolvimento, validacao";
-            //bool valid = false;
-            //["desenvolvimento and aplicacao and teste or valor or verdade"]
-
-            /*  if (searchStringCleaned.Contains(" and "))
-             {
-
-                 listAll = searchStringCleaned.Split(" and ").ToList();
-                 listOfAND = listAll.ToList();
-
-                 //Console.WriteLine("\ntext --> " + text);
-                 //Console.WriteLine("\nlistAll --> [" + string.Join(", ", listAll) + "]\n");
-                 foreach (string item in listAll)
-                 {
-                     if (item.Contains("or"))
-                     {
-                         listOfOR.AddRange(item.Split(" or "));
-                         foreach (string val in listOfOR)
-                         { */
-            // OR condition
-            /* if (text.Contains(val))
+            while (Regex.Match(regexString, pattern, RegexOptions.IgnoreCase).Success)
             {
-                valid = true;
-            } */
+                if (regexString[0] != '(')
+                {
+                    int indexRegexString = regexString.IndexOf('(');
+                    regexResult.Add(regexString[0..indexRegexString]);
+                    regexString = regexString.Remove(0, indexRegexString);
+                }
+                Match regexMatch = Regex.Match(regexString, pattern, RegexOptions.IgnoreCase);
+                Console.WriteLine("Found '{0}' at position {1}.", regexMatch.Value, regexMatch.Index);
+                regexResult.Add(regexMatch.Value);
+                int initialMatch = regexString.IndexOf(regexMatch.Value);
+                regexString = regexString.Remove(initialMatch, regexMatch.Value.Count());
+                //Console.WriteLine("regexString --> " + regexString);
+            }
 
-            // AND condition
-            /* if (text.Contains(val))
+            if (regexString != "")
             {
-                valid = true;
-            } else 
+                regexResult.Add(regexString);
+            }
+
+            Console.WriteLine("regexResult --> [" + string.Join(",", regexResult) + "]");
+
+            string text = "texto e a";
+
+            foreach (var validation in regexResult)
             {
-                valid = false;
-            }  */
-            //Console.WriteLine(val);
-            //}
-            //listOfAND.Remove(item);
-            //listOfAND.Remove(item);
-            //Console.WriteLine("isValid --> " + valid);
-            //}
-            //Console.WriteLine("\nlistOfOR --> [" + string.Join(", ", listOfOR) + "]\n");
-            //}
+                // TODO: revisar TokenizeSearchString.
+                List<string> tokenizedValidation = TokenizeSearchString(validation,true);
+            }
 
-            // (desenvolvimento or aplicacao) and (teste or validacao or vacina)
-            // busca primeira lista de or
-            // busca segunda lista de or
-            // compara o and
+            Environment.Exit(0);
 
-            /* if (listOfAND.Contains("or"))
-            {
-                listOfAND.Remove
-            } */
+            List<List<string>> groups = new List<List<string>>();
 
+            
 
-            //}
+            Environment.Exit(0);
 
-            /* if (searchStringCleaned.Contains("or")) 
-            {
-                listOfOR = (searchStringCleaned.Split(" or ").ToList());
-            } */
-            // (palavraA AND palavraB) AND (palavraC AND palavraD) OR (palavraE AND palavraF)
-            // {[and]["palavraA", "palavraB"], [and]["palavraC", "palavraD"], [and]["palavraE", "palavraF"]}
-            // AND --> Contains ("palavraA") &&  Contains ("palavraB")
-            // OR  --> Contains ("palavraA") ||  Contains ("palavraB")
-
-            // lista de palavras
-            // dicionário com a palavra + qtdDePalavras
-            // 1
-
-            // (banana AND maca AND pera) --> "banana, maca, pera"
-            // (desenvolvimento OR teste) --> "desenvolvimento, teste"
-            // (desenvolvimento AND teste) OR (banana AND maca AND pera) --> "desenvolvimento, teste", "banana, maca, pera"
-            // (a OR b) AND (c OR d) --> "a, b" e "c"
-
-            // lista de dicionarios {[and]["banana, maca, pera"], }
-            // [and]["banana, maca, pera"]
-            // [or]["desenvolvimento, teste"]
-
-            //"{desenvolvimento, aplicacao, teste}"
-
-            //Console.WriteLine("\n" + searchStringCleaned + "\n");
-
-            //string[] splits = searchStringCleaned.Split(new string[] { " or ", " and " }, StringSplitOptions.TrimEntries);
-
-            //Console.WriteLine("\n-------------------------------------------------------");
-            /* Console.WriteLine("\nlistAll --> [" + string.Join(", ", listAll) + "]\n");
-            Console.WriteLine("\nlistOfAND --> [" + string.Join(", ", listOfAND) + "]\n");
-            Console.WriteLine("\nlistOfOR --> [" + string.Join(", ", listOfOR) + "]\n"); */
-
-            // [stringBusca][stringType]
-            // [key][value]
-
-            // dicionario 
-            // pos 1 --> ["desenvolvimento, teste"], ["and"]
-            // pos 2 --> "banana, maca, pera", ["and"]
-
-            // if contains pos1 || contains pos2
             return searchTokensdictionary;
-
         }
         #endregion
 
@@ -312,10 +199,11 @@ namespace SearchStringHandler
 
             foreach (var token in searchTokensdictionary)
             {
-                if (!token.Equals(lastToken)) 
+                if (!token.Equals(lastToken))
                 {
                     occurrences.Append($"{token.Key}({token.Value}), ");
-                } else 
+                }
+                else
                 {
                     occurrences.Append($"{token.Key}({token.Value})");
                 }
