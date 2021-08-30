@@ -57,7 +57,7 @@ namespace SearchStringHandler
 
             SearchStringUtils.PrintLogs("tokenizedValidation", stringListOfLists: tokenizedValidation);
 
-            //Dictionary<string, int> searchTokensdictionary = SearchStringUtils.FindExpressionsInPdf(tokenizedValidation, filePath);
+            Dictionary<string, int> searchTokensdictionary = SearchStringUtils.FindExpressionsInPdf(tokenizedValidation, filePath);
 
             //SearchStringUtils.GenerateReport(++contQuery, filePath, searchString, searchTokensdictionary);
             /* } */
