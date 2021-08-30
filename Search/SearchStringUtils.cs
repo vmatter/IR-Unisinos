@@ -215,8 +215,12 @@ namespace SearchStringHandler
         {
             Dictionary<string, int> searchTokensdictionary = new Dictionary<string, int>();
 
-            foreach (var sentence in searchStringTokens)
+            foreach (List<string> sentence in searchStringTokens)
             {
+                foreach (string word in sentence)
+                {
+
+                }
 
             }
 
@@ -269,24 +273,24 @@ namespace SearchStringHandler
         }
         #endregion
 
-        #region  PrintLogs
-        public static void PrintLogs<T>(string name, string stringValue = null, List<T> stringList = null, List<List<T>> stringListOfLists = null)
+        #region PrintLogs
+        public static void PrintLogs<T>(string nameToPrint, string primitiveValue = null, List<T> printList = null, List<List<T>> printListOfLists = null)
         {
-            if (stringValue != null)
+            if (primitiveValue != null)
             {
-                Console.WriteLine($"\n{name} --> {stringValue}");
+                Console.WriteLine($"\n{nameToPrint} --> {primitiveValue}");
             }
-            else if (stringList != null)
+            else if (printList != null)
             {
-                Console.WriteLine($"\n{name} --> [" + string.Join(", ", stringList) + "]");
+                Console.WriteLine($"\n{nameToPrint} --> [" + string.Join(", ", printList) + "]");
             }
-            else if (stringListOfLists != null)
+            else if (printListOfLists != null)
             {
                 StringBuilder tokenizedValidationStrings = new StringBuilder();
 
-                List<T> outerValue = stringListOfLists[stringListOfLists.Count() - 1];
+                List<T> outerValue = printListOfLists[printListOfLists.Count() - 1];
 
-                foreach (var sentence in stringListOfLists)
+                foreach (var sentence in printListOfLists)
                 {
                     T innerValue = sentence[sentence.Count() - 1];
                     foreach (var word in sentence)

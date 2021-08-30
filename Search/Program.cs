@@ -27,7 +27,7 @@ namespace SearchStringHandler
             //string searchString = "\"(\"texto info\" banana and opcao)\"";
             //string searchString = "\"teste\"";
 
-            SearchStringUtils.PrintLogs<string>(name:"searchString", searchString);
+            SearchStringUtils.PrintLogs<string>(nameToPrint: "searchString", searchString);
 
             //? Testar com o While depois.
             /* while (true)
@@ -51,11 +51,11 @@ namespace SearchStringHandler
 
             List<string> searchStringTokens = SearchStringUtils.TokenizeSearchString(searchStringCleaned);
 
-            SearchStringUtils.PrintLogs("searchStringTokens", stringList: searchStringTokens);
+            SearchStringUtils.PrintLogs("searchStringTokens", printList: searchStringTokens);
 
             List<List<string>> tokenizedValidation = SearchStringUtils.SeparateExpressions(searchStringTokens);
 
-            SearchStringUtils.PrintLogs("tokenizedValidation", stringListOfLists: tokenizedValidation);
+            SearchStringUtils.PrintLogs("tokenizedValidation", printListOfLists: tokenizedValidation);
 
             Dictionary<string, int> searchTokensdictionary = SearchStringUtils.FindExpressionsInPdf(tokenizedValidation, filePath);
 
