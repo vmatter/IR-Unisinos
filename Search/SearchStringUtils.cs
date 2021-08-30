@@ -15,17 +15,26 @@ namespace SearchStringHandler
     public static class SearchStringUtils
     {
 
-        #region InputSearchString
+        /* #region InputSearchString
         public static string InputSearchString()
         {
+            bool directoryVS = Directory.GetFiles(Directory.GetCurrentDirectory(), ".vs").Length > 0;
+            bool directoryVSCode = Directory.GetFiles(Directory.GetCurrentDirectory(), ".vscode").Length > 0;
             // Verify if is VS Code or VS Studio
-            /* if (Directory.GetFiles(Directory.GetCurrentDirectory(), ".sln").Length > 0)
+#if directoryVS
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new Form1());
+#elif directoryVSCode
+            while (true)
             {
-
-            } */
+                Console.WriteLine("Digite sua String de Busca");
+                string searchString = Console.ReadLine();
+            }
+#endif
             return "";
         }
-        #endregion
+        #endregion */
 
         #region CleanSearchString
         /*
@@ -261,19 +270,43 @@ namespace SearchStringHandler
         #endregion
 
         #region  PrintLogs
-        public static void PrintLogs<T>(T input, string name)
+        public static void PrintLogs<T>(string name, string stringValue = null, List<T> stringList = null, List<List<T>> stringListOfLists = null)
         {
-            if (input.GetType() == typeof(string))
+            if (stringValue != null)
             {
-                Console.WriteLine("string");
+                Console.WriteLine($"\n{name} --> {stringValue}");
             }
-            else if (input.GetType() == typeof(List<string>))
+            else if (stringList != null)
             {
-                Console.WriteLine("List<string>");
+                Console.WriteLine($"\n{name} --> [" + string.Join(", ", stringList) + "]");
             }
-            else if (input.GetType() == typeof(List<List<string>>))
+            else if (stringListOfLists != null)
             {
-                Console.WriteLine("List<List<string>>");
+                StringBuilder tokenizedValidationStrings = new StringBuilder();
+
+                List<T> outerValue = stringListOfLists[stringListOfLists.Count() - 1];
+
+                foreach (var sentence in stringListOfLists)
+                {
+                    T innerValue = sentence[sentence.Count() - 1];
+                    foreach (var word in sentence)
+                    {
+                        if (!word.Equals(innerValue))
+                        {
+                            tokenizedValidationStrings.Append((string.Join(" ", word)) + " ");
+                        }
+                        else
+                        {
+                            tokenizedValidationStrings.Append((string.Join(" ", word)));
+                        }
+                    }
+                    if (!sentence.Equals(outerValue))
+                    {
+                        tokenizedValidationStrings.Append(", ");
+
+                    }
+                }
+                Console.WriteLine("\ntokenizedValidation --> [" + tokenizedValidationStrings + "]");
             }
         }
         #endregion
