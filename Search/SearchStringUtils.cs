@@ -215,16 +215,12 @@ namespace SearchStringHandler
         {
             Dictionary<string, int> searchTokensdictionary = new Dictionary<string, int>();
 
+            Environment.Exit(0);
+
             foreach (List<string> sentence in searchStringTokens)
             {
-                foreach (string word in sentence)
-                {
-
-                }
 
             }
-
-            Environment.Exit(0);
 
 
 
@@ -273,44 +269,44 @@ namespace SearchStringHandler
         }
         #endregion
 
-        #region PrintLogs
-        public static void PrintLogs<T>(string nameToPrint, string primitiveValue = null, List<T> printList = null, List<List<T>> printListOfLists = null)
+        #region PrintOutputs
+        public static void PrintOutputs<T>(string outputName, string outputPrimitive = null, List<T> outputList = null, List<List<T>> outputListOfLists = null)
         {
-            if (primitiveValue != null)
+            if (outputPrimitive != null)
             {
-                Console.WriteLine($"\n{nameToPrint} --> {primitiveValue}");
+                Console.WriteLine($"\n{outputName} ({outputPrimitive.GetType().Name})\t\t-->\t{outputPrimitive}");
             }
-            else if (printList != null)
+            else if (outputList != null)
             {
-                Console.WriteLine($"\n{nameToPrint} --> [" + string.Join(", ", printList) + "]");
+                Console.WriteLine($"\n{outputName} ({outputList.GetType().Name})\t\t-->\t[" + string.Join(", ", outputList) + "]");
             }
-            else if (printListOfLists != null)
+            else if (outputListOfLists != null)
             {
-                StringBuilder tokenizedValidationStrings = new StringBuilder();
+                StringBuilder listOfListsOutput = new StringBuilder();
 
-                List<T> outerValue = printListOfLists[printListOfLists.Count() - 1];
+                List<T> outerLastValue = outputListOfLists[outputListOfLists.Count() - 1];
 
-                foreach (var sentence in printListOfLists)
+                foreach (var sentence in outputListOfLists)
                 {
-                    T innerValue = sentence[sentence.Count() - 1];
+                    T innerLastValue = sentence[sentence.Count() - 1];
                     foreach (var word in sentence)
                     {
-                        if (!word.Equals(innerValue))
+                        if (!word.Equals(innerLastValue))
                         {
-                            tokenizedValidationStrings.Append((string.Join(" ", word)) + " ");
+                            listOfListsOutput.Append((string.Join(" ", word)) + " ");
                         }
                         else
                         {
-                            tokenizedValidationStrings.Append((string.Join(" ", word)));
+                            listOfListsOutput.Append((string.Join(" ", word)));
                         }
                     }
-                    if (!sentence.Equals(outerValue))
+                    if (!sentence.Equals(outerLastValue))
                     {
-                        tokenizedValidationStrings.Append(", ");
+                        listOfListsOutput.Append(", ");
 
                     }
                 }
-                Console.WriteLine("\ntokenizedValidation --> [" + tokenizedValidationStrings + "]");
+                Console.WriteLine($"\n{outputName} ({outputListOfLists.GetType().Name})\t\t-->\t[" + listOfListsOutput + "]");
             }
         }
         #endregion
