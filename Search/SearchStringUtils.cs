@@ -11,9 +11,22 @@ using System.Text.RegularExpressions;
 namespace SearchStringHandler
 {
     // TODO: Documentar.
-    // TODO: Criar uma função de split que mantém o separador.
+    // TODO: Criar uma função de split que mantém o separador. Tentar criar outro método sem regex.
     public static class SearchStringUtils
     {
+
+        #region InputSearchString
+        public static string InputSearchString()
+        {
+            // Verify if is VS Code or VS Studio
+            /* if (Directory.GetFiles(Directory.GetCurrentDirectory(), ".sln").Length > 0)
+            {
+
+            } */
+            return "";
+        }
+        #endregion
+
         #region CleanSearchString
         /*
          * Method responsible for removing unnecessary characters from the search string.
@@ -52,6 +65,44 @@ namespace SearchStringHandler
         }
         #endregion 
 
+        #region ValidateStringExceptions
+        public static bool ValidateStringExceptions(string searchStringCleaned)
+        {
+            bool areValidParentheses = false;
+            int countOpenParentheses = 0;
+            int countClosedParentheses = 0;
+
+            // TODO: Validar se a string for vazia.
+
+            if (searchStringCleaned[0] == '\"' && searchStringCleaned[searchStringCleaned.Length - 1] == '\"')
+            {
+                throw new InvalidOperationException("\nString de busca está toda entre aspas.");
+            }
+
+            if (searchStringCleaned.Length > 0)
+            {
+                // Count how many parentheses exist.
+                countOpenParentheses = searchStringCleaned.Length - searchStringCleaned.Replace("(", "").Length;
+                countClosedParentheses = searchStringCleaned.Length - searchStringCleaned.Replace(")", "").Length;
+            }
+            else
+            {
+                throw new InvalidOperationException("\nString de busca está vazia.");
+            }
+
+            if ((countOpenParentheses - countClosedParentheses) != 0)
+            {
+                throw new InvalidOperationException("\nString de busca apresenta parênteses irregulares.");
+            }
+            else
+            {
+                areValidParentheses = true;
+            }
+
+            return areValidParentheses;
+        }
+        #endregion
+
         #region TokenizeSearchString
         //* Method responsible for tokenizing the search string.
         // @see https://stackoverflow.com/questions/16265247/printing-all-contents-of-array-in-c-sharp
@@ -63,11 +114,9 @@ namespace SearchStringHandler
 
             string[] stringValidator = searchStringCleaned.Trim().Split(" ");
 
-            bool hasQuotation = false;
+            bool hasQuotationMarks = false;
             string quotationString = "";
             string searchWord = "";
-
-            Console.WriteLine("\n[" + string.Join(", ", stringValidator) + "]\n");
 
             foreach (string word in stringValidator)
             {
@@ -75,11 +124,11 @@ namespace SearchStringHandler
 
                 if (searchWord[0] == '\"')
                 {
-                    hasQuotation = true;
+                    hasQuotationMarks = true;
                     quotationString = searchWord;
                     continue;
                 }
-                else if (hasQuotation)
+                else if (hasQuotationMarks)
                 {
                     quotationString += " " + searchWord;
 
@@ -89,17 +138,17 @@ namespace SearchStringHandler
                     }
                 }
 
-                if ((searchStringHandlerList.Count != 0) && (searchWord != "and" && searchWord != "or") && (searchWord != "(" && searchWord != ")") && (searchStringHandlerList.Last() != "and" && searchStringHandlerList.Last() != "or" && searchStringHandlerList.Last() != "(" && searchStringHandlerList.Last() != ")") && !hasQuotation)
+                if ((searchStringHandlerList.Count != 0) && (searchWord != "and" && searchWord != "or") && (searchWord != "(" && searchWord != ")") && (searchStringHandlerList.Last() != "and" && searchStringHandlerList.Last() != "or" && searchStringHandlerList.Last() != "(" && searchStringHandlerList.Last() != ")") && !hasQuotationMarks)
                 {
                     searchStringHandlerList.Add("and");
                     searchStringHandlerList.Add(searchWord);
                 }
                 else
                 {
-                    if (hasQuotation)
+                    if (hasQuotationMarks)
                     {
                         searchStringHandlerList.Add(quotationString);
-                        hasQuotation = false;
+                        hasQuotationMarks = false;
                         quotationString = "";
                     }
                     else
@@ -109,22 +158,17 @@ namespace SearchStringHandler
                 }
             }
 
-            Console.WriteLine("\nsearchStringHandlerList --> [" + string.Join(", ", searchStringHandlerList) + "]");
-
             return searchStringHandlerList;
         }
+        #endregion
 
         #region SeparateExpressions
         public static List<List<string>> SeparateExpressions(List<string> searchStringTokens)
         {
             string regexString = string.Join(" ", searchStringTokens);
 
-            Console.WriteLine("regexString --> " + regexString);
-
             List<string> regexResult = new List<string>();
 
-            // @"\([^\()]+\)"
-            // regexMatch.Value[1..(regexMatch.Value.Count()-1)].Trim()
             string pattern = @"\(([^\()]+)\)";
 
             while (Regex.Match(regexString, pattern, RegexOptions.IgnoreCase).Success)
@@ -146,10 +190,6 @@ namespace SearchStringHandler
                 regexResult.Add(regexString);
             }
 
-            Console.WriteLine("regexResult --> [" + string.Join(", ", regexResult) + "]");
-
-            //string text = "texto e a";
-
             List<List<string>> tokenizedValidation = new List<List<string>>();
 
             foreach (var validation in regexResult)
@@ -157,30 +197,12 @@ namespace SearchStringHandler
                 tokenizedValidation.Add(TokenizeSearchString(validation));
             }
 
-            StringBuilder tokenizedValidationStrings = new StringBuilder();
-
-            // TODO: Remover depois.
-            var lastToken = tokenizedValidation.Last();
-            foreach (var item in tokenizedValidation)
-            {
-                if (!item.Equals(lastToken))
-                {
-                    tokenizedValidationStrings.Append((string.Join(" ", item)) + ", ");
-                }
-                else
-                {
-                    tokenizedValidationStrings.Append((string.Join(" ", item)));
-                }
-                //Console.WriteLine("\ntokenizedValidation --> [" + string.Join(", ", item) + "]");
-            }
-            Console.WriteLine("\ntokenizedValidation --> [" + tokenizedValidationStrings + "]");
             return tokenizedValidation;
         }
         #endregion
 
-
-        #region SearchTokensInPdf
-        public static Dictionary<string, int> SearchTokensInPDF(List<List<string>> searchStringTokens, string filePath)
+        #region FindExpressionsInPdf
+        public static Dictionary<string, int> FindExpressionsInPdf(List<List<string>> searchStringTokens, string filePath)
         {
             Dictionary<string, int> searchTokensdictionary = new Dictionary<string, int>();
 
@@ -238,43 +260,22 @@ namespace SearchStringHandler
         }
         #endregion
 
-        public static bool ValidateStringConditions(string searchStringCleaned)
+        #region  PrintLogs
+        public static void PrintLogs<T>(T input, string name)
         {
-            bool areValidParentheses = false;
-            int countOpenParentheses = 0;
-            int countClosedParentheses = 0;
-
-            // TODO: Validar se a string for vazia.
-
-            if (searchStringCleaned[0] == '\"' && searchStringCleaned[searchStringCleaned.Length - 1] == '\"')
+            if (input.GetType() == typeof(string))
             {
-                throw new InvalidOperationException("\nString de busca está toda entre aspas.");
+                Console.WriteLine("string");
             }
-
-            if (searchStringCleaned.Length > 0)
+            else if (input.GetType() == typeof(List<string>))
             {
-                // Count how many parentheses exist.
-                countOpenParentheses = searchStringCleaned.Length - searchStringCleaned.Replace("(", "").Length;
-                countClosedParentheses = searchStringCleaned.Length - searchStringCleaned.Replace(")", "").Length;
+                Console.WriteLine("List<string>");
             }
-            else
+            else if (input.GetType() == typeof(List<List<string>>))
             {
-                throw new InvalidOperationException("\nString de busca está vazia.");
+                Console.WriteLine("List<List<string>>");
             }
-
-            if ((countOpenParentheses - countClosedParentheses) != 0)
-            {
-                throw new InvalidOperationException("\nString de busca apresenta parênteses irregulares.");
-            }
-            else
-            {
-                areValidParentheses = true;
-            }
-
-            return areValidParentheses;
         }
         #endregion
-
     }
-
 }

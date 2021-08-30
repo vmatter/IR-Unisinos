@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
+using System.Linq;
 
 namespace SearchStringHandler
 {
@@ -7,6 +9,7 @@ namespace SearchStringHandler
     {
         public static void Main(string[] args)
         {
+           //string searchString = SearchStringUtils.InputSearchString();
 
             //? Testar strings
             //string text = "Em um mundo onde a informação tornou-se um dos recursos abundantes mais relevantes para a sociedade, é imprescindível que além da extração segura dos dados, realizar uma classificação significativa dos dados adquiridos também deve ser possível, visto que estes podem conter informações sensíveis de entidades. Uma das formas mais utilizadas de extração de informação é através de textos, portanto técnicas de Processamento de Linguagem Natural (PLN) vêm sendo vastamente exploradas. Levando isso em consideração, o objetivo deste trabalho foi encontrar arquiteturas sistêmicas capazes de aplicar classificação em textos e extrair com sucesso informações relevantes. Uma revisão sistemática da literatura (RSL) foi conduzida para analisar artigos acadêmicos publicados de 2010 até o início de janeiro de 2021. O processo de triagem resultou em uma população final de 21 estudos de um total de 234 analisados. A filtragem inclui a remoção de artigos não relacionados a uma classificação de texto ou arquitetura sistêmica de classificação de informações. Neste artigo, propostas e resultados que contribuem para os desafios de classificação de texto são apresentados considerando quatro questões de pesquisa. A conclusão do estudo atestou que não existe uma arquitetura sistêmica ou algoritmo de classificação específico capaz de ser considerado o estado da arte no campo da classificação de texto.";
@@ -18,6 +21,7 @@ namespace SearchStringHandler
             //string searchString = "\"teste\"";
 
             Console.WriteLine("\nsearchString --> " + searchString);
+            SearchStringUtils.PrintLogs(searchString, "searchString");
 
 
             // Handle the file.
@@ -35,13 +39,14 @@ namespace SearchStringHandler
             string searchStringCleaned = SearchStringUtils.CleanSearchString(searchString);
 
             Console.WriteLine("\nsearchStringCleaned --> " + searchStringCleaned);
+            SearchStringUtils.PrintLogs(searchStringCleaned, "searchStringCleaned");
 
             // TODO: Pedir para o Marcio se tem como voltar ao início do programa estando dentro da classe.
 
             // While
             try
             {
-                SearchStringUtils.ValidateStringConditions(searchStringCleaned);
+                SearchStringUtils.ValidateStringExceptions(searchStringCleaned);
             }
             catch (System.Exception exception)
             {
@@ -51,11 +56,43 @@ namespace SearchStringHandler
 
             List<string> searchStringTokens = SearchStringUtils.TokenizeSearchString(searchStringCleaned);
 
+            Console.WriteLine("\nsearchStringTokens --> [" + string.Join(", ", searchStringTokens) + "]");
+
+            SearchStringUtils.PrintLogs(searchStringTokens, "searchStringTokens");
+
             List<List<string>> tokenizedValidation = SearchStringUtils.SeparateExpressions(searchStringTokens);
 
-            Dictionary<string, int> searchTokensdictionary = SearchStringUtils.SearchTokensInPDF(tokenizedValidation, filePath);
+            StringBuilder tokenizedValidationStrings = new StringBuilder();
 
-            SearchStringUtils.GenerateReport(++contQuery, filePath, searchString, searchTokensdictionary);
+            List<string> lastSentence = tokenizedValidation.Last();
+
+            foreach (List<string> sentence in tokenizedValidation)
+            {
+                string lastWord = sentence.Last();
+                foreach (var word in sentence)
+                {
+                    if (!word.Equals(lastWord))
+                    {
+                        tokenizedValidationStrings.Append((string.Join(" ", word)) + " ");
+                    }
+                    else
+                    {
+                        tokenizedValidationStrings.Append((string.Join(" ", word)));
+                    }
+                }
+                if (!sentence.Equals(lastSentence))
+                {
+                    tokenizedValidationStrings.Append(", ");
+
+                }
+            }
+            Console.WriteLine("\ntokenizedValidation --> [" + tokenizedValidationStrings + "]");
+
+            SearchStringUtils.PrintLogs(tokenizedValidation, "tokenizedValidation");
+
+            //Dictionary<string, int> searchTokensdictionary = SearchStringUtils.FindExpressionsInPdf(tokenizedValidation, filePath);
+
+            //SearchStringUtils.GenerateReport(++contQuery, filePath, searchString, searchTokensdictionary);
             /* } */
 
             // End While
