@@ -36,14 +36,14 @@ namespace SearchStringHandler
         }
         #endregion */
 
-        #region CleanSearchString
+        #region NormalizeAndCleanText
         /*
          * Method responsible for removing unnecessary characters from the search string.
           @see https://stackoverflow.com/questions/11395775/clean-the-string-is-there-any-better-way-of-doing-it
         */
-        public static string CleanSearchString(string searchString)
+        public static string NormalizeAndCleanText(string textString)
         {
-            string normalizedSearchString = searchString.ToLower().Normalize(NormalizationForm.FormD);
+            string normalizedSearchString = textString.ToLower().Normalize(NormalizationForm.FormD);
 
             string textCleaned = "";
 
@@ -213,18 +213,108 @@ namespace SearchStringHandler
         #region FindExpressionsInPdf
         public static Dictionary<string, int> FindExpressionsInPdf(List<List<string>> searchStringTokens, string filePath)
         {
-            Dictionary<string, int> searchTokensdictionary = new Dictionary<string, int>();
+            Dictionary<string, int> repeatedTokensDictionary = new Dictionary<string, int>();
+
+            List<string> aux = new List<string>();
+
+            string text = "Úm téxto contém ínfo and A or@ b^";
+
+            string normalizedText = NormalizeAndCleanText(text);
+
+            string[] splittedText = null;
+
+            int countRepeatedTokens = 0;
+
+            /* string token = "info";
+
+            foreach (string word in splittedText)
+            {
+                if (word == token)
+                {
+                    countRepeatedTokens++;
+                }
+            } */
 
             Environment.Exit(0);
 
-            foreach (List<string> sentence in searchStringTokens)
-            {
+            List<string> allWordsList = new List<string>();
+            List<string> listOfAnd = new List<string>();
+            List<string> listOfOr = new List<string>();
 
+            Dictionary<string, bool> expressionValidatorDict = new Dictionary<string, bool>();
+
+            string[] auxArray = null;
+            bool isListValid = false;
+
+            // TODO: Testar o and e or sozinho na frase depois, colocar eles com aspas.
+
+            foreach (List<string> expression in searchStringTokens)
+            {
+                //andWordsList = expression
+                for (int i = 0; i < expression.Count(); i++)
+                {
+
+                    if (expression[i].Contains(" and "))
+                    {
+                        listOfAnd = (expression[i].Split(" and ")).ToList();
+                        foreach (string token in listOfAnd)
+                        {
+                            isListValid = normalizedText.Contains(token);
+                        }
+
+                        if (isListValid)
+                        {
+                            splittedText = normalizedText.Split(" ");
+
+                            foreach (string token in listOfAnd)
+                            {
+                                foreach (string word in splittedText)
+                                {
+                                    if (word == token)
+                                    {
+                                        countRepeatedTokens++;
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                    else if (expression[++i] == "or")
+                    {
+                        listOfOr.Add(expression[i]);
+                    }
+
+                }
+                /* foreach (string token in expression)
+                {
+                    if (!repeatedTokensDictionary.ContainsKey(token))
+                    {
+                        countRepeatedTokens = 0;
+                        repeatedTokensDictionary.Add(token, countRepeatedTokens);
+                    }
+                    // Validar se token inicial for and ou or.
+                    if (token. == "and" && token != "or")
+                        allWords.Add(token);
+                    {
+                        
+                    }
+                    foreach (string word in splittedText)
+                    {
+                        if (word == token)
+                        {
+                            countRepeatedTokens++;
+                        }
+                    }
+                    repeatedTokensDictionary[token] = countRepeatedTokens;
+                } */
+                //Console.WriteLine(string.Join(", ", expression));
             }
 
+            Console.WriteLine("repeatedTokensDictionary --> " + string.Join(", ", repeatedTokensDictionary));
 
+            Environment.Exit(0);
 
-            return searchTokensdictionary;
+            return repeatedTokensDictionary;
         }
         #endregion
 
