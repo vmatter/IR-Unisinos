@@ -213,11 +213,12 @@ namespace SearchStringHandler
         #region FindExpressionsInPdf
         public static Dictionary<string, int> FindExpressionsInPdf(List<List<string>> searchStringTokens, string filePath)
         {
+            List<Tuple<string, string>> expressionValidatorTuple = new List<Tuple<string, string>>();
             Dictionary<string, int> repeatedTokensDictionary = new Dictionary<string, int>();
 
             List<string> aux = new List<string>();
 
-            string text = "Úm téxto contém ínfo and A or@ b^";
+            string text = "teste";
 
             string normalizedText = NormalizeAndCleanText(text);
 
@@ -235,80 +236,84 @@ namespace SearchStringHandler
                 }
             } */
 
-            Environment.Exit(0);
-
             List<string> allWordsList = new List<string>();
             List<string> listOfAnd = new List<string>();
             List<string> listOfOr = new List<string>();
 
-            Dictionary<string, bool> expressionValidatorDict = new Dictionary<string, bool>();
-
-            string[] auxArray = null;
-            bool isListValid = false;
-
             // TODO: Testar o and e or sozinho na frase depois, colocar eles com aspas.
 
-            foreach (List<string> expression in searchStringTokens)
+
+            expressionValidatorTuple = VerifyExpressions(searchStringTokens, normalizedText);
+
+            Console.WriteLine("\nexpressionValidatorDict --> " + string.Join(", ", expressionValidatorTuple));
+
+            Environment.Exit(0);
+
+            foreach (Tuple<string, string> condition in expressionValidatorTuple)
             {
-                //andWordsList = expression
-                for (int i = 0; i < expression.Count(); i++)
+
+            }
+
+
+
+            /* allWordsList.Add(expression[i]);
+            Environment.Exit(0);
+
+            if (expression[i] == (" and "))
+            {
+                isAnd = true;
+                foreach (string token in listOfAnd)
                 {
+                    // Verifies if the text has the token
+                    isListValid = normalizedText.Contains(token);
+                }
 
-                    if (expression[i].Contains(" and "))
+                if (isListValid)
+                {
+                    splittedText = normalizedText.Split(" ");
+
+                    foreach (string token in listOfAnd)
                     {
-                        listOfAnd = (expression[i].Split(" and ")).ToList();
-                        foreach (string token in listOfAnd)
+                        foreach (string word in splittedText)
                         {
-                            isListValid = normalizedText.Contains(token);
-                        }
-
-                        if (isListValid)
-                        {
-                            splittedText = normalizedText.Split(" ");
-
-                            foreach (string token in listOfAnd)
+                            if (word == token)
                             {
-                                foreach (string word in splittedText)
-                                {
-                                    if (word == token)
-                                    {
-                                        countRepeatedTokens++;
-                                    }
-                                }
+                                countRepeatedTokens++;
                             }
                         }
+                    }
+                }
 
-                    }
-                    else if (expression[++i] == "or")
-                    {
-                        listOfOr.Add(expression[i]);
-                    }
+            }
+            else if (expression[++i] == "or")
+            {
+                listOfOr.Add(expression[i]);
+            } */
+
+
+            /* foreach (string token in expression)
+            {
+                if (!repeatedTokensDictionary.ContainsKey(token))
+                {
+                    countRepeatedTokens = 0;
+                    repeatedTokensDictionary.Add(token, countRepeatedTokens);
+                }
+                // Validar se token inicial for and ou or.
+                if (token. == "and" && token != "or")
+                    allWords.Add(token);
+                {
 
                 }
-                /* foreach (string token in expression)
+                foreach (string word in splittedText)
                 {
-                    if (!repeatedTokensDictionary.ContainsKey(token))
+                    if (word == token)
                     {
-                        countRepeatedTokens = 0;
-                        repeatedTokensDictionary.Add(token, countRepeatedTokens);
+                        countRepeatedTokens++;
                     }
-                    // Validar se token inicial for and ou or.
-                    if (token. == "and" && token != "or")
-                        allWords.Add(token);
-                    {
-                        
-                    }
-                    foreach (string word in splittedText)
-                    {
-                        if (word == token)
-                        {
-                            countRepeatedTokens++;
-                        }
-                    }
-                    repeatedTokensDictionary[token] = countRepeatedTokens;
-                } */
-                //Console.WriteLine(string.Join(", ", expression));
-            }
+                }
+                repeatedTokensDictionary[token] = countRepeatedTokens;
+            } */
+            //Console.WriteLine(string.Join(", ", expression));
 
             Console.WriteLine("repeatedTokensDictionary --> " + string.Join(", ", repeatedTokensDictionary));
 
@@ -398,6 +403,169 @@ namespace SearchStringHandler
                 }
                 Console.WriteLine($"\n{outputName} ({outputListOfLists.GetType().Name})({outputListOfLists.GetType().Name})\t-->\t[" + listOfListsOutput + "]");
             }
+        }
+        #endregion
+
+        #region VerifyExpressions
+        private static List<Tuple<string, string>> VerifyExpressions(List<List<string>> searchStringTokens, string normalizedText)
+        {
+            bool isAnd = false;
+            bool isOr = false;
+            string keyExpression = "";
+            List<Tuple<string, string>> expressionValidatorTuple = new List<Tuple<string, string>>();
+
+
+            foreach (List<string> expression in searchStringTokens)
+            {
+                for (int i = 0; i < expression.Count(); i++)
+                {
+                    if (expression[i] == ("and"))
+                    {
+                        if (isOr)
+                        {
+
+                            if (ValidateExpression(keyExpression, normalizedText, isOr: isOr))
+                            {
+                                expressionValidatorTuple.Add(new Tuple<string, string>(keyExpression, "true"));
+                                expressionValidatorTuple.Add(new Tuple<string, string>("and", "operator"));
+                                isOr = false;
+                                isAnd = true;
+                                keyExpression = "";
+                                continue;
+                            }
+                            else
+                            {
+                                expressionValidatorTuple.Add(new Tuple<string, string>(keyExpression, "false"));
+                                expressionValidatorTuple.Add(new Tuple<string, string>("and", "operator"));
+                                isOr = false;
+                                isAnd = true;
+                                keyExpression = "";
+                                continue;
+                            }
+
+                        }
+                        else if (!isAnd)
+                        {
+                            isAnd = true;
+                        }
+                    }
+                    else if (expression[i] == ("or"))
+                    {
+                        if (isAnd)
+                        {
+                            if (ValidateExpression(keyExpression, normalizedText, isAnd: isAnd))
+                            {
+                                expressionValidatorTuple.Add(new Tuple<string, string>(keyExpression, "true"));
+                                expressionValidatorTuple.Add(new Tuple<string, string>("or", "operator"));
+                                isAnd = false;
+                                isOr = true;
+                                keyExpression = "";
+                                continue;
+                            }
+                            else
+                            {
+                                expressionValidatorTuple.Add(new Tuple<string, string>(keyExpression, "false"));
+                                expressionValidatorTuple.Add(new Tuple<string, string>("or", "operator"));
+                                isAnd = false;
+                                isOr = true;
+                                keyExpression = "";
+                                continue;
+                            }
+
+                        }
+                        else if (!isOr)
+                        {
+                            isOr = true;
+                        }
+                    }
+                    else if (i == expression.Count() - 1)
+                    {
+                        if (isAnd)
+                        {
+                            if (ValidateExpression(expression[i], normalizedText, isAnd: isAnd))
+                            {
+                                expressionValidatorTuple.Add(new Tuple<string, string>(expression[i], "true"));
+                            }
+                            else
+                            {
+                                expressionValidatorTuple.Add(new Tuple<string, string>(expression[i], "false"));
+                            }
+                        }
+                        else if (isOr)
+                        {
+                            if (ValidateExpression(keyExpression, normalizedText, isOr: isOr))
+                            {
+                                expressionValidatorTuple.Add(new Tuple<string, string>(expression[i], "true"));
+                            }
+                            else
+                            {
+                                expressionValidatorTuple.Add(new Tuple<string, string>(expression[i], "false"));
+                            }
+                        }
+
+                    }
+
+                    if (keyExpression != "")
+                    {
+                        keyExpression += " " + expression[i];
+                    }
+                    else
+                    {
+                        keyExpression += expression[i];
+
+                    }
+
+                }
+            }
+            return expressionValidatorTuple;
+        }
+        #endregion
+
+        #region ValidateExpression
+        private static bool ValidateExpression(string expression, string normalizedText, bool isAnd = false, bool isOr = false)
+        {
+            bool isValidExpression = true;
+            string[] splittedExpression = null;
+            int countWordForOr = 0;
+
+            if (isAnd)
+            {
+                splittedExpression = expression.Split(" and ");
+            }
+            else if (isOr)
+            {
+                splittedExpression = expression.Split(" or ");
+            }
+
+            foreach (string word in splittedExpression)
+            {
+                if (isAnd)
+                {
+                    if (!normalizedText.Contains(word))
+                    {
+                        isValidExpression = false;
+                        break;
+                    }
+                }
+                else if (isOr)
+                {
+                    if (normalizedText.Contains(word))
+                    {
+                        countWordForOr++;
+                    }
+
+                }
+            }
+
+            if (isOr)
+            {
+                if (countWordForOr == 0)
+                {
+                    isValidExpression = false;
+                }
+            }
+
+            return isValidExpression;
         }
         #endregion
     }
