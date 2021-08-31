@@ -396,7 +396,7 @@ namespace SearchStringHandler
 
                     }
                 }
-                Console.WriteLine($"\n{outputName} ({outputListOfLists.GetType().Name})\t\t-->\t[" + listOfListsOutput + "]");
+                Console.WriteLine($"\n{outputName} ({outputListOfLists.GetType().Name})({outputListOfLists.GetType().Name})\t-->\t[" + listOfListsOutput + "]");
             }
         }
         #endregion
