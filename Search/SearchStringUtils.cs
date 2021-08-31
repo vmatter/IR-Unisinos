@@ -14,28 +14,6 @@ namespace SearchStringHandler
     // TODO: Criar uma função de split que mantém o separador. Tentar criar outro método sem regex.
     public static class SearchStringUtils
     {
-
-        /* #region InputSearchString
-        public static string InputSearchString()
-        {
-            bool directoryVS = Directory.GetFiles(Directory.GetCurrentDirectory(), ".vs").Length > 0;
-            bool directoryVSCode = Directory.GetFiles(Directory.GetCurrentDirectory(), ".vscode").Length > 0;
-            // Verify if is VS Code or VS Studio
-#if directoryVS
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
-#elif directoryVSCode
-            while (true)
-            {
-                Console.WriteLine("Digite sua String de Busca");
-                string searchString = Console.ReadLine();
-            }
-#endif
-            return "";
-        }
-        #endregion */
-
         #region NormalizeAndCleanText
         /*
          * Method responsible for removing unnecessary characters from the search string.
@@ -214,11 +192,10 @@ namespace SearchStringHandler
         public static Dictionary<string, int> FindExpressionsInPdf(List<List<string>> searchStringTokens, string filePath)
         {
             List<Tuple<string, string>> expressionValidatorTuple = new List<Tuple<string, string>>();
-            Dictionary<string, int> repeatedTokensDictionary = new Dictionary<string, int>();
 
             List<string> aux = new List<string>();
 
-            string text = "teste";
+            string text = "texto e info";
 
             string normalizedText = NormalizeAndCleanText(text);
 
@@ -226,21 +203,13 @@ namespace SearchStringHandler
 
             int countRepeatedTokens = 0;
 
-            /* string token = "info";
-
-            foreach (string word in splittedText)
-            {
-                if (word == token)
-                {
-                    countRepeatedTokens++;
-                }
-            } */
-
             List<string> allWordsList = new List<string>();
             List<string> listOfAnd = new List<string>();
             List<string> listOfOr = new List<string>();
 
             // TODO: Testar o and e or sozinho na frase depois, colocar eles com aspas.
+
+            // TODO: Fazer a leitura do PDF
 
 
             expressionValidatorTuple = VerifyExpressions(searchStringTokens, normalizedText);
@@ -249,75 +218,11 @@ namespace SearchStringHandler
 
             Environment.Exit(0);
 
-            foreach (Tuple<string, string> condition in expressionValidatorTuple)
-            {
+            Dictionary<string, int> repeatedTokensDictionary = new Dictionary<string, int>();
 
-            }
+            /* Console.WriteLine("repeatedTokensDictionary --> " + string.Join(", ", repeatedTokensDictionary));
 
-
-
-            /* allWordsList.Add(expression[i]);
-            Environment.Exit(0);
-
-            if (expression[i] == (" and "))
-            {
-                isAnd = true;
-                foreach (string token in listOfAnd)
-                {
-                    // Verifies if the text has the token
-                    isListValid = normalizedText.Contains(token);
-                }
-
-                if (isListValid)
-                {
-                    splittedText = normalizedText.Split(" ");
-
-                    foreach (string token in listOfAnd)
-                    {
-                        foreach (string word in splittedText)
-                        {
-                            if (word == token)
-                            {
-                                countRepeatedTokens++;
-                            }
-                        }
-                    }
-                }
-
-            }
-            else if (expression[++i] == "or")
-            {
-                listOfOr.Add(expression[i]);
-            } */
-
-
-            /* foreach (string token in expression)
-            {
-                if (!repeatedTokensDictionary.ContainsKey(token))
-                {
-                    countRepeatedTokens = 0;
-                    repeatedTokensDictionary.Add(token, countRepeatedTokens);
-                }
-                // Validar se token inicial for and ou or.
-                if (token. == "and" && token != "or")
-                    allWords.Add(token);
-                {
-
-                }
-                foreach (string word in splittedText)
-                {
-                    if (word == token)
-                    {
-                        countRepeatedTokens++;
-                    }
-                }
-                repeatedTokensDictionary[token] = countRepeatedTokens;
-            } */
-            //Console.WriteLine(string.Join(", ", expression));
-
-            Console.WriteLine("repeatedTokensDictionary --> " + string.Join(", ", repeatedTokensDictionary));
-
-            Environment.Exit(0);
+            Environment.Exit(0); */
 
             return repeatedTokensDictionary;
         }
@@ -414,6 +319,7 @@ namespace SearchStringHandler
             string keyExpression = "";
             List<Tuple<string, string>> expressionValidatorTuple = new List<Tuple<string, string>>();
 
+            List<string> lastExpression = searchStringTokens.Last();
 
             foreach (List<string> expression in searchStringTokens)
             {
@@ -429,7 +335,7 @@ namespace SearchStringHandler
                                 expressionValidatorTuple.Add(new Tuple<string, string>(keyExpression, "true"));
                                 expressionValidatorTuple.Add(new Tuple<string, string>("and", "operator"));
                                 isOr = false;
-                                isAnd = true;
+                                isAnd = false;
                                 keyExpression = "";
                                 continue;
                             }
@@ -438,7 +344,7 @@ namespace SearchStringHandler
                                 expressionValidatorTuple.Add(new Tuple<string, string>(keyExpression, "false"));
                                 expressionValidatorTuple.Add(new Tuple<string, string>("and", "operator"));
                                 isOr = false;
-                                isAnd = true;
+                                isAnd = false;
                                 keyExpression = "";
                                 continue;
                             }
@@ -458,7 +364,7 @@ namespace SearchStringHandler
                                 expressionValidatorTuple.Add(new Tuple<string, string>(keyExpression, "true"));
                                 expressionValidatorTuple.Add(new Tuple<string, string>("or", "operator"));
                                 isAnd = false;
-                                isOr = true;
+                                isOr = false;
                                 keyExpression = "";
                                 continue;
                             }
@@ -467,7 +373,7 @@ namespace SearchStringHandler
                                 expressionValidatorTuple.Add(new Tuple<string, string>(keyExpression, "false"));
                                 expressionValidatorTuple.Add(new Tuple<string, string>("or", "operator"));
                                 isAnd = false;
-                                isOr = true;
+                                isOr = false;
                                 keyExpression = "";
                                 continue;
                             }
@@ -477,32 +383,6 @@ namespace SearchStringHandler
                         {
                             isOr = true;
                         }
-                    }
-                    else if (i == expression.Count() - 1)
-                    {
-                        if (isAnd)
-                        {
-                            if (ValidateExpression(expression[i], normalizedText, isAnd: isAnd))
-                            {
-                                expressionValidatorTuple.Add(new Tuple<string, string>(expression[i], "true"));
-                            }
-                            else
-                            {
-                                expressionValidatorTuple.Add(new Tuple<string, string>(expression[i], "false"));
-                            }
-                        }
-                        else if (isOr)
-                        {
-                            if (ValidateExpression(keyExpression, normalizedText, isOr: isOr))
-                            {
-                                expressionValidatorTuple.Add(new Tuple<string, string>(expression[i], "true"));
-                            }
-                            else
-                            {
-                                expressionValidatorTuple.Add(new Tuple<string, string>(expression[i], "false"));
-                            }
-                        }
-
                     }
 
                     if (keyExpression != "")
@@ -515,6 +395,32 @@ namespace SearchStringHandler
 
                     }
 
+                    if (expression == lastExpression && i == expression.Count() - 1)
+                    {
+                        if (expression[expression.Count() - 2] == "and")
+                        {
+                            if (ValidateExpression(expression[i], normalizedText, isAnd: true))
+                            {
+                                expressionValidatorTuple.Add(new Tuple<string, string>(keyExpression, "true"));
+                            }
+                            else
+                            {
+                                expressionValidatorTuple.Add(new Tuple<string, string>(keyExpression, "false"));
+                            }
+                        }
+                        else if (expression[expression.Count() - 2] == "or")
+                        {
+                            if (ValidateExpression(keyExpression, normalizedText, isOr: true))
+                            {
+                                expressionValidatorTuple.Add(new Tuple<string, string>(keyExpression, "true"));
+                            }
+                            else
+                            {
+                                expressionValidatorTuple.Add(new Tuple<string, string>(keyExpression, "false"));
+                            }
+                        }
+
+                    }
                 }
             }
             return expressionValidatorTuple;
@@ -568,5 +474,14 @@ namespace SearchStringHandler
             return isValidExpression;
         }
         #endregion
+
+        #region CountWords
+        public static Dictionary<string, int> CountWords()
+        {
+            Dictionary<string, int> repeatedTokensDictionary = new Dictionary<string, int>();
+            return repeatedTokensDictionary;
+        }
+        #endregion
     }
+
 }
