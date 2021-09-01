@@ -189,19 +189,24 @@ namespace SearchStringHandler
         #endregion
 
         #region ReadTextInPdf
-        public static string ReadTextInPdf(string fileName)
+        public static string ReadTextInPdf(string fileName, string directory = "pdfs")
         {
-            string directory = Directory.GetCurrentDirectory();
-
-            Console.WriteLine("\ndirectory --> " + directory);
-
-            Environment.Exit(0);
-
-            /* using (PdfReader reader = new PdfReader(@"D:\Codigos\Testes\Enunciado - Projeto 1.pdf"))
+            // TODO: Adicionar o diretorio escolhido, directoryName.
+            string filePath = "";
+            StringBuilder pdfText = new StringBuilder();
+            if (!fileName.Contains(".pdf"))
             {
-                string pdfText = "";
-                var texto = new System.Text.StringBuilder();
-                using StreamWriter file = new(@"D:\Codigos\Testes\teste55.txt", append: true);
+                filePath = Directory.GetCurrentDirectory() + $@"\{directory}\" + fileName + ".pdf";
+            }
+            else
+            {
+                filePath = Directory.GetCurrentDirectory() + $@"\{directory}\" + fileName;
+            }
+
+            using (PdfReader reader = new PdfReader(filePath))
+            {
+
+                using StreamWriter file = new(Directory.GetCurrentDirectory() + @"\pdfs\" + @"\testPdf.txt", append: false);
                 {
                     for (int i = 1; i <= reader.NumberOfPages; i++)
                     {
@@ -209,18 +214,14 @@ namespace SearchStringHandler
                         string[] linhas = aux.Split('\n');
                         foreach (string linha in linhas)
                         {
-                            if (linha.Contains("projeto") || linha.Contains("Projeto"))
-                            {
-                                texto.Append($"{linha}{"\n"}");
-                                file.WriteLine(linha);
-                            }
+                            pdfText.Append($"{linha}{"\n"}");
+                            file.WriteLine(linha);
                         }
                     }
-                    Console.Write(texto);
                 }
-            } */
+            }
 
-            return "";
+            return pdfText.ToString();
         }
         #endregion
 
@@ -343,7 +344,7 @@ namespace SearchStringHandler
 
                     }
                 }
-                Console.WriteLine($"\n{outputName} ({outputListOfLists.GetType().Name})({outputListOfLists.GetType().Name})\t-->\t[" + listOfListsOutput + "]");
+                Console.WriteLine($"\n{outputName} ({outputListOfLists.GetType().Name})({outputListOfLists.GetType().Name})\t-->\t[{listOfListsOutput}]");
             }
         }
         #endregion
@@ -458,7 +459,7 @@ namespace SearchStringHandler
                 }
             }
             // TODO: Procurar FileSeparator.
-            
+
             return expressionValidatorTuple;
         }
         #endregion

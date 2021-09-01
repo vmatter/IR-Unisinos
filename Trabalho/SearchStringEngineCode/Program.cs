@@ -64,15 +64,23 @@ namespace SearchStringHandler
             List<List<string>> separatedExpressions = SearchStringUtils.SeparateExpressions(tokenizedSearchStrings);
             SearchStringUtils.PrintOutputs(outputName: "separatedExpressions", outputListOfLists: separatedExpressions);
 
-            string fileName = "";
+            string fileName = "Projeto Final - Enunciado";
 
-            string pdfText = SearchStringUtils.ReadTextInPdf(fileName);
+            string fileDirectory = "pdfs";
 
-            //SearchStringUtils.VerifyExpressions(separatedExpressions, pdfText);
-            /* foreach (var test in expressionValidatorTuple)
+            string pdfText = SearchStringUtils.ReadTextInPdf(fileName: fileName, fileDirectory);
+
+            List<Tuple<string, string>> VerifiedExpressions = SearchStringUtils.VerifyExpressions(separatedExpressions, pdfText);
+
+            StringBuilder listOfTuples = new StringBuilder();
+
+
+            foreach (var expressions in VerifiedExpressions)
             {
-                Console.WriteLine("{0} -  {1}", test.Item1, test.Item2);
-            } */
+                listOfTuples.Append("[" + expressions.Item1 + ", " + expressions.Item2 + "] ");
+            }
+
+            Console.WriteLine($"\nVerifiedExpressions ({VerifiedExpressions.GetType().Name})\t\t-->\t{listOfTuples.ToString().TrimEnd()}");
 
             //Dictionary<string, int> searchTokensdictionary = SearchStringUtils.FindExpressionsInPdf(separatedExpressions, filePath);
 
