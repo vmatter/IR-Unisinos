@@ -458,10 +458,7 @@ namespace SearchStringHandler
                 }
             }
             // TODO: Procurar FileSeparator.
-            foreach (var test in expressionValidatorTuple)
-            {
-                Console.WriteLine("{0} -  {1}", test.Item1, test.Item2);
-            }
+            
             return expressionValidatorTuple;
         }
         #endregion
