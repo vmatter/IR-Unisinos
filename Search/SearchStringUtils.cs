@@ -125,7 +125,7 @@ namespace SearchStringHandler
                     }
                 }
 
-                if ((searchStringHandlerList.Count != 0) && (searchWord != "and" && searchWord != "or") && (searchWord != "(" && searchWord != ")") && (searchStringHandlerList.Last() != "and") && (searchStringHandlerList.Last() != "or") && (searchStringHandlerList.Last() != "(") && (searchStringHandlerList.Last() != ")") && (!hasQuotationMarks))
+                if ((searchStringHandlerList.Count != 0) && (searchWord != "and" && searchWord != "or") && (searchWord != "(" && searchWord != ")") && (searchStringHandlerList.Last() != "and") && (searchStringHandlerList.Last() != "or") && (!hasQuotationMarks))
                 {
                     searchStringHandlerList.Add("and");
                     searchStringHandlerList.Add(searchWord);
@@ -196,7 +196,7 @@ namespace SearchStringHandler
             List<string> aux = new List<string>();
 
             //string text = "texto e info";
-            string text = "verificação de linguagens";
+            string text = "teste de verificação de Linguagens";
 
             string normalizedText = NormalizeAndCleanText(text);
 
@@ -335,15 +335,9 @@ namespace SearchStringHandler
 
                 for (int i = 0; i < expression.Count; i++)
                 {
-                    if (keyExpression != "")
-                    {
-                        keyExpression += " " + expression[i];
-                    }
-                    else
-                    {
-                        keyExpression += expression[i];
 
-                    }
+                    keyExpression += " " + expression[i];
+
                     if (expression[i] == "and")
                     {
                         if (isOr)
@@ -402,23 +396,25 @@ namespace SearchStringHandler
                         {
                             if (isAnd)
                             {
-                                expressionValidatorTuple.Add(new Tuple<string, string>(keyExpression, (ValidateExpression(keyExpression, normalizedText, isAnd: true)).ToString()));
+                                expressionValidatorTuple.Add(new Tuple<string, string>(keyExpression.Trim(), (ValidateExpression(keyExpression, normalizedText, isAnd: true)).ToString()));
                             }
                             else if (isOr)
                             {
-                                expressionValidatorTuple.Add(new Tuple<string, string>(keyExpression, (ValidateExpression(keyExpression, normalizedText, isOr: true)).ToString()));
+                                expressionValidatorTuple.Add(new Tuple<string, string>(keyExpression.Trim(), (ValidateExpression(keyExpression, normalizedText, isOr: true)).ToString()));
                             }
                             else
                             {
+                                // TODO: Revisar esse caso onde só sobra uma palavra, talvez não precise ver se é and ou or
+                                // TODO: só verificar se a palavra existe.
                                 auxString = expression[i - 1];
 
                                 if (auxString == "and")
                                 {
-                                    expressionValidatorTuple.Add(new Tuple<string, string>(keyExpression, (ValidateExpression(keyExpression, normalizedText, isAnd: true)).ToString()));
+                                    expressionValidatorTuple.Add(new Tuple<string, string>(keyExpression.Trim(), (ValidateExpression(keyExpression, normalizedText, isAnd: true)).ToString()));
                                 }
                                 else if (auxString == "or")
                                 {
-                                    expressionValidatorTuple.Add(new Tuple<string, string>(keyExpression, (ValidateExpression(keyExpression, normalizedText, isOr: true)).ToString()));
+                                    expressionValidatorTuple.Add(new Tuple<string, string>(keyExpression.Trim(), (ValidateExpression(keyExpression, normalizedText, isOr: true)).ToString()));
                                 }
                             }
                         }

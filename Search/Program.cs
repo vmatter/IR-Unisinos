@@ -23,23 +23,17 @@ namespace SearchStringHandler
             //string text = "Em um mundo onde a informação tornou-se um dos recursos abundantes mais relevantes para a sociedade, é imprescindível que além da extração segura dos dados, realizar uma classificação significativa dos dados adquiridos também deve ser possível, visto que estes podem conter informações sensíveis de entidades. Uma das formas mais utilizadas de extração de informação é através de textos, portanto técnicas de Processamento de Linguagem Natural (PLN) vêm sendo vastamente exploradas. Levando isso em consideração, o objetivo deste trabalho foi encontrar arquiteturas sistêmicas capazes de aplicar classificação em textos e extrair com sucesso informações relevantes. Uma revisão sistemática da literatura (RSL) foi conduzida para analisar artigos acadêmicos publicados de 2010 até o início de janeiro de 2021. O processo de triagem resultou em uma população final de 21 estudos de um total de 234 analisados. A filtragem inclui a remoção de artigos não relacionados a uma classificação de texto ou arquitetura sistêmica de classificação de informações. Neste artigo, propostas e resultados que contribuem para os desafios de classificação de texto são apresentados considerando quatro questões de pesquisa. A conclusão do estudo atestou que não existe uma arquitetura sistêmica ou algoritmo de classificação específico capaz de ser considerado o estado da arte no campo da classificação de texto.";
             //string searchStringInput = "(texto and info) or (a and b)";
             //string searchStringInput = "desenvolvimento and teste and coragem and verificar";
-            //string searchStringInput = "desenvolvimento or teste or coragem and verificar";
+            string searchStringInput = "desenvolvimento or teste or coragem and verificar";
             //string searchStringInput = "(teste and desenvolvimento) or programação";
-
             //string searchStringInput = "teste and (promoção or testando)"; // ! Revisar questão do and(.
             //string searchStringInput = "teste and (olhando ";
             //string searchStringInput = "teste and olhando)";
             //string searchStringInput = "teste andolhando";
-
             //string searchStringInput = "teste and(verificação de linguagens)"; // ! Bug de junto do parênteses
-            string searchStringInput = "teste and ((verificação de) linguagens)";
+            //string searchStringInput = "teste and ((mand de) linguagens)";
             //string searchStringInput = "and teste or verificação"; // ! Revisar questão do and.
             //string searchStringInput = "verificando and teste @"; // ! Revisar questão do and.
             //string searchStringInput = "(olhando and observando) or verificação -"; // ! Revisar questão do and.
-
-
-            
-
             //string searchStringInput = "a and b or c and d or e";
             //string searchStringInput = "desenvolvimento AND aplicação";
             //string searchStringInput = "(\"texto info\" banana and opcao)";
