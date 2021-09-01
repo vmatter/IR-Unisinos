@@ -188,6 +188,42 @@ namespace SearchStringHandler
         }
         #endregion
 
+        #region ReadTextInPdf
+        public static string ReadTextInPdf(string fileName)
+        {
+            string directory = Directory.GetCurrentDirectory();
+
+            Console.WriteLine("\ndirectory --> " + directory);
+
+            Environment.Exit(0);
+
+            /* using (PdfReader reader = new PdfReader(@"D:\Codigos\Testes\Enunciado - Projeto 1.pdf"))
+            {
+                string pdfText = "";
+                var texto = new System.Text.StringBuilder();
+                using StreamWriter file = new(@"D:\Codigos\Testes\teste55.txt", append: true);
+                {
+                    for (int i = 1; i <= reader.NumberOfPages; i++)
+                    {
+                        string aux = PdfTextExtractor.GetTextFromPage(reader, i);
+                        string[] linhas = aux.Split('\n');
+                        foreach (string linha in linhas)
+                        {
+                            if (linha.Contains("projeto") || linha.Contains("Projeto"))
+                            {
+                                texto.Append($"{linha}{"\n"}");
+                                file.WriteLine(linha);
+                            }
+                        }
+                    }
+                    Console.Write(texto);
+                }
+            } */
+
+            return "";
+        }
+        #endregion
+
         #region FindExpressionsInPdf
         public static Dictionary<string, int> FindExpressionsInPdf(List<List<string>> searchStringTokens, string filePath)
         {
@@ -313,7 +349,7 @@ namespace SearchStringHandler
         #endregion
 
         #region VerifyExpressions
-        private static List<Tuple<string, string>> VerifyExpressions(List<List<string>> searchStringTokens, string normalizedText)
+        public static List<Tuple<string, string>> VerifyExpressions(List<List<string>> searchStringTokens, string normalizedText)
         {
             bool isAnd = false;
             bool isOr = false;
@@ -420,10 +456,12 @@ namespace SearchStringHandler
                         }
                     }
                 }
-                Console.WriteLine("\nkeyExpression --> " + keyExpression);
             }
-            Console.WriteLine("\nexpressionValidatorTuple --> " + string.Join(", ", expressionValidatorTuple));
-
+            // TODO: Procurar FileSeparator.
+            foreach (var test in expressionValidatorTuple)
+            {
+                Console.WriteLine("{0} -  {1}", test.Item1, test.Item2);
+            }
             return expressionValidatorTuple;
         }
         #endregion
