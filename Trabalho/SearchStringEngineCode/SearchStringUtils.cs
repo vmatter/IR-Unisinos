@@ -14,6 +14,78 @@ namespace SearchStringHandler
     // TODO: Criar uma função de split que mantém o separador. Tentar criar outro método sem regex.
     public static class SearchStringUtils
     {
+
+        #region TestSearchStrings
+        public static string TestSearchStrings(string fileDirectory = "searchStrings", string fileName = "searchStrings")
+        {
+
+            string filePath = "";
+            StringBuilder pdfText = new StringBuilder();
+
+            if (!fileName.Contains(".txt"))
+            {
+                filePath = Directory.GetCurrentDirectory() + $@"\{fileDirectory}\" + fileName + ".txt";
+            }
+            else
+            {
+                filePath = Directory.GetCurrentDirectory() + $@"\{fileDirectory}\" + fileName;
+            }
+
+            // Read file using StreamReader. Reads file line by line    
+            using (StreamReader file = new StreamReader(filePath))
+            {
+                int counter = 0;
+                string searchString;
+
+                while ((searchString = file.ReadLine()) != null)
+                {
+                    Console.WriteLine(searchString);
+                }
+                file.Close();
+                //Console.WriteLine($ "File has {counter} lines.");
+            }
+
+            return "";
+        }
+        #endregion
+
+        #region ReadTextInPdf
+        public static string ReadTextInPdf(string fileDirectory = "pdfs", string fileName = "Projeto inicial - enunciado")
+        {
+            // TODO: Adicionar o diretorio escolhido, directoryName.
+            string filePath = "";
+            StringBuilder pdfText = new StringBuilder();
+            if (!fileName.Contains(".pdf"))
+            {
+                filePath = Directory.GetCurrentDirectory() + $@"\{fileDirectory}\" + fileName + ".pdf";
+            }
+            else
+            {
+                filePath = Directory.GetCurrentDirectory() + $@"\{fileDirectory}\" + fileName;
+            }
+
+            using (PdfReader reader = new PdfReader(filePath))
+            {
+
+                using StreamWriter file = new(Directory.GetCurrentDirectory() + @"\pdfs\" + @"\testPdf.txt", append: false);
+                {
+                    for (int i = 1; i <= reader.NumberOfPages; i++)
+                    {
+                        string aux = PdfTextExtractor.GetTextFromPage(reader, i);
+                        string[] linhas = aux.Split('\n');
+                        foreach (string linha in linhas)
+                        {
+                            pdfText.Append($"{linha}{"\n"}");
+                            file.WriteLine(linha);
+                        }
+                    }
+                }
+            }
+
+            return pdfText.ToString();
+        }
+        #endregion
+
         #region NormalizeAndCleanText
         /*
          * Method responsible for removing unnecessary characters from the search string.
@@ -50,7 +122,7 @@ namespace SearchStringHandler
 
             return textCleaned.Normalize(NormalizationForm.FormC);
         }
-        #endregion 
+        #endregion
 
         #region ValidateStringExceptions
         public static bool ValidateStringExceptions(string searchStringCleaned)
@@ -185,43 +257,6 @@ namespace SearchStringHandler
             }
 
             return tokenizedValidation;
-        }
-        #endregion
-
-        #region ReadTextInPdf
-        public static string ReadTextInPdf(string fileName, string directory = "pdfs")
-        {
-            // TODO: Adicionar o diretorio escolhido, directoryName.
-            string filePath = "";
-            StringBuilder pdfText = new StringBuilder();
-            if (!fileName.Contains(".pdf"))
-            {
-                filePath = Directory.GetCurrentDirectory() + $@"\{directory}\" + fileName + ".pdf";
-            }
-            else
-            {
-                filePath = Directory.GetCurrentDirectory() + $@"\{directory}\" + fileName;
-            }
-
-            using (PdfReader reader = new PdfReader(filePath))
-            {
-
-                using StreamWriter file = new(Directory.GetCurrentDirectory() + @"\pdfs\" + @"\testPdf.txt", append: false);
-                {
-                    for (int i = 1; i <= reader.NumberOfPages; i++)
-                    {
-                        string aux = PdfTextExtractor.GetTextFromPage(reader, i);
-                        string[] linhas = aux.Split('\n');
-                        foreach (string linha in linhas)
-                        {
-                            pdfText.Append($"{linha}{"\n"}");
-                            file.WriteLine(linha);
-                        }
-                    }
-                }
-            }
-
-            return pdfText.ToString();
         }
         #endregion
 
@@ -473,18 +508,18 @@ namespace SearchStringHandler
 
             if (isAnd)
             {
-                splittedExpression = expression.Split(" and ");
+                splittedExpression = expression.Split(new string[] { " and", " and ", "and " }, StringSplitOptions.RemoveEmptyEntries);
             }
             else if (isOr)
             {
-                splittedExpression = expression.Split(" or ");
+                splittedExpression = expression.Split(new string[] { " or", " or ", "or " }, StringSplitOptions.RemoveEmptyEntries);
             }
 
             foreach (string word in splittedExpression)
             {
                 if (isAnd)
                 {
-                    if (!normalizedText.Contains(word))
+                    if (!normalizedText.Contains(word.Trim()))
                     {
                         isValidExpression = false;
                         break;
@@ -492,7 +527,7 @@ namespace SearchStringHandler
                 }
                 else if (isOr)
                 {
-                    if (normalizedText.Contains(word))
+                    if (normalizedText.Contains(word.Trim()))
                     {
                         countWordForOr++;
                     }
