@@ -195,7 +195,8 @@ namespace SearchStringHandler
 
             List<string> aux = new List<string>();
 
-            string text = "texto e info";
+            //string text = "texto e info";
+            string text = "verificação de linguagens";
 
             string normalizedText = NormalizeAndCleanText(text);
 
@@ -214,7 +215,7 @@ namespace SearchStringHandler
 
             expressionValidatorTuple = VerifyExpressions(searchStringTokens, normalizedText);
 
-            Console.WriteLine("\nexpressionValidatorDict --> " + string.Join(", ", expressionValidatorTuple));
+            //Console.WriteLine("\nexpressionValidatorDict --> " + string.Join(", ", expressionValidatorTuple));
 
             Environment.Exit(0);
 
@@ -321,13 +322,112 @@ namespace SearchStringHandler
 
             List<string> lastExpression = searchStringTokens.Last();
 
+            string auxString = "";
+
+            // "teste and (verificação de linguagens)"
+            // "a or b and c and d or e"
+
             foreach (List<string> expression in searchStringTokens)
             {
-                for (int i = 0; i < expression.Count(); i++)
+                keyExpression = "";
+                isAnd = false;
+                isOr = false;
+
+                for (int i = 0; i < expression.Count; i++)
                 {
-                   
+                    if (keyExpression != "")
+                    {
+                        keyExpression += " " + expression[i];
+                    }
+                    else
+                    {
+                        keyExpression += expression[i];
+
+                    }
+                    if (expression[i] == "and")
+                    {
+                        if (isOr)
+                        {
+                            auxString = keyExpression.Substring(0, keyExpression.LastIndexOf("and")).Trim();
+                            expressionValidatorTuple.Add(new Tuple<string, string>(auxString, (ValidateExpression(auxString, normalizedText, isOr: true)).ToString()));
+                            expressionValidatorTuple.Add(new Tuple<string, string>("and", "operator"));
+                            keyExpression = "";
+                            isAnd = false;
+                            isOr = false;
+                            continue;
+                        }
+
+                        isAnd = true;
+                        isOr = false;
+                    }
+                    else if (expression[i] == "or")
+                    {
+                        if (isAnd)
+                        {
+                            auxString = keyExpression.Substring(0, keyExpression.LastIndexOf("or")).Trim();
+                            expressionValidatorTuple.Add(new Tuple<string, string>(auxString, (ValidateExpression(auxString, normalizedText, isAnd: true)).ToString()));
+                            expressionValidatorTuple.Add(new Tuple<string, string>("or", "operator"));
+                            keyExpression = "";
+                            isAnd = false;
+                            isOr = false;
+                            continue;
+                        }
+                        isAnd = false;
+                        isOr = true;
+                    }
+
+                    if (i == expression.Count - 1)
+                    {
+                        if (expression[i] == "and")
+                        {
+                            auxString = keyExpression.Substring(0, keyExpression.LastIndexOf("and")).Trim();
+
+                            if (auxString != "")
+                            {
+                                expressionValidatorTuple.Add(new Tuple<string, string>(auxString, (ValidateExpression(auxString, normalizedText, isAnd: true)).ToString()));
+                            }
+                            expressionValidatorTuple.Add(new Tuple<string, string>("and", "operator"));
+                        }
+                        else if (expression[i] == "or")
+                        {
+                            auxString = keyExpression.Substring(0, keyExpression.LastIndexOf("or")).Trim();
+
+                            if (auxString != "")
+                            {
+                                expressionValidatorTuple.Add(new Tuple<string, string>(auxString, (ValidateExpression(auxString, normalizedText, isOr: true)).ToString()));
+                            }
+                            expressionValidatorTuple.Add(new Tuple<string, string>("or", "operator"));
+                        }
+                        else
+                        {
+                            if (isAnd)
+                            {
+                                expressionValidatorTuple.Add(new Tuple<string, string>(keyExpression, (ValidateExpression(keyExpression, normalizedText, isAnd: true)).ToString()));
+                            }
+                            else if (isOr)
+                            {
+                                expressionValidatorTuple.Add(new Tuple<string, string>(keyExpression, (ValidateExpression(keyExpression, normalizedText, isOr: true)).ToString()));
+                            }
+                            else
+                            {
+                                auxString = expression[i - 1];
+
+                                if (auxString == "and")
+                                {
+                                    expressionValidatorTuple.Add(new Tuple<string, string>(keyExpression, (ValidateExpression(keyExpression, normalizedText, isAnd: true)).ToString()));
+                                }
+                                else if (auxString == "or")
+                                {
+                                    expressionValidatorTuple.Add(new Tuple<string, string>(keyExpression, (ValidateExpression(keyExpression, normalizedText, isOr: true)).ToString()));
+                                }
+                            }
+                        }
+                    }
                 }
+                Console.WriteLine("\nkeyExpression --> " + keyExpression);
             }
+            Console.WriteLine("\nexpressionValidatorTuple --> " + string.Join(", ", expressionValidatorTuple));
+
             return expressionValidatorTuple;
         }
         #endregion
