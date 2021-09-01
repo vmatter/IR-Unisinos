@@ -125,7 +125,7 @@ namespace SearchStringHandler
                     }
                 }
 
-                if ((searchStringHandlerList.Count != 0) && (searchWord != "and" && searchWord != "or") && (searchWord != "(" && searchWord != ")") && (searchStringHandlerList.Last() != "and" && searchStringHandlerList.Last() != "or" && searchStringHandlerList.Last() != "(" && searchStringHandlerList.Last() != ")") && !hasQuotationMarks)
+                if ((searchStringHandlerList.Count != 0) && (searchWord != "and" && searchWord != "or") && (searchWord != "(" && searchWord != ")") && (searchStringHandlerList.Last() != "and") && (searchStringHandlerList.Last() != "or") && (searchStringHandlerList.Last() != "(") && (searchStringHandlerList.Last() != ")") && (!hasQuotationMarks))
                 {
                     searchStringHandlerList.Add("and");
                     searchStringHandlerList.Add(searchWord);
@@ -350,7 +350,28 @@ namespace SearchStringHandler
                             }
 
                         }
-                        else if (!isAnd)
+                        else if (isAnd)
+                        {
+                            if (ValidateExpression(keyExpression, normalizedText, isAnd: isAnd))
+                            {
+                                expressionValidatorTuple.Add(new Tuple<string, string>(keyExpression, "true"));
+                                expressionValidatorTuple.Add(new Tuple<string, string>("and", "operator"));
+                                isOr = false;
+                                isAnd = false;
+                                keyExpression = "";
+                                continue;
+                            }
+                            else
+                            {
+                                expressionValidatorTuple.Add(new Tuple<string, string>(keyExpression, "false"));
+                                expressionValidatorTuple.Add(new Tuple<string, string>("and", "operator"));
+                                isOr = false;
+                                isAnd = false;
+                                keyExpression = "";
+                                continue;
+                            }
+                        }
+                        else
                         {
                             isAnd = true;
                         }
@@ -379,7 +400,28 @@ namespace SearchStringHandler
                             }
 
                         }
-                        else if (!isOr)
+                        else if (isOr)
+                        {
+                            if (ValidateExpression(keyExpression, normalizedText, isOr: isOr))
+                            {
+                                expressionValidatorTuple.Add(new Tuple<string, string>(keyExpression, "true"));
+                                expressionValidatorTuple.Add(new Tuple<string, string>("or", "operator"));
+                                isOr = false;
+                                isAnd = false;
+                                keyExpression = "";
+                                continue;
+                            }
+                            else
+                            {
+                                expressionValidatorTuple.Add(new Tuple<string, string>(keyExpression, "false"));
+                                expressionValidatorTuple.Add(new Tuple<string, string>("or", "operator"));
+                                isOr = false;
+                                isAnd = false;
+                                keyExpression = "";
+                                continue;
+                            }
+                        }
+                        else
                         {
                             isOr = true;
                         }
