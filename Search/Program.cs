@@ -30,7 +30,7 @@ namespace SearchStringHandler
             //string searchStringInput = "teste and olhando)";
             //string searchStringInput = "teste andolhando";
 
-            //string searchStringInput = "teste and (verificação de linguagens)"; // ! Revisar questão do and.
+            string searchStringInput = "teste and (verificação de linguagens)"; // ! Revisar questão do and.
             //string searchStringInput = "and teste or verificação"; // ! Revisar questão do and.
             //string searchStringInput = "verificando and teste @"; // ! Revisar questão do and.
             //string searchStringInput = "(olhando and observando) or verificação -"; // ! Revisar questão do and.
@@ -38,7 +38,7 @@ namespace SearchStringHandler
 
             
 
-            string searchStringInput = "a and b or c and d or e";
+            //string searchStringInput = "a and b or c and d or e";
             //string searchStringInput = "desenvolvimento AND aplicação";
             //string searchStringInput = "(\"texto info\" banana and opcao)";
             //string searchStringInput = "\"(\"texto info\" banana and opcao)\"";
