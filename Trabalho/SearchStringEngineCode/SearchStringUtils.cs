@@ -197,7 +197,7 @@ namespace SearchStringHandler
                     }
                 }
 
-                if ((searchStringHandlerList.Count != 0) && (searchWord != "and" && searchWord != "or") && (searchWord != "(" && searchWord != ")") && (searchStringHandlerList.Last() != "and") && (searchStringHandlerList.Last() != "or") && (!hasQuotationMarks))
+                if (AddAndValidation(searchStringHandlerList, searchWord, hasQuotationMarks))
                 {
                     searchStringHandlerList.Add("and");
                     searchStringHandlerList.Add(searchWord);
@@ -512,9 +512,10 @@ namespace SearchStringHandler
 
             foreach (string word in splittedExpression)
             {
+                string searchWord = " " + word.Trim() + " ";
                 if (isAnd)
                 {
-                    if (!normalizedText.Contains(word.Trim()))
+                    if (!normalizedText.Contains(searchWord))
                     {
                         isValidExpression = false;
                         break;
@@ -522,7 +523,7 @@ namespace SearchStringHandler
                 }
                 else if (isOr)
                 {
-                    if (normalizedText.Contains(word.Trim()))
+                    if (normalizedText.Contains(searchWord))
                     {
                         countWordForOr++;
                     }
@@ -543,12 +544,41 @@ namespace SearchStringHandler
         #endregion
 
         #region CountWords
+
         public static Dictionary<string, int> CountWords()
         {
             Dictionary<string, int> repeatedTokensDictionary = new Dictionary<string, int>();
             return repeatedTokensDictionary;
         }
         #endregion
-    }
 
+        #region AddAndValidation
+        public static bool AddAndValidation(List<string> searchStringHandlerList, string searchWord, bool hasQuotationMarks)
+        {
+
+            bool shouldAddAnd = true;
+
+            if ((searchWord == "and" || searchWord == "or") || (searchWord == "(" || searchWord == ")"))
+            {
+                return false;
+            }
+
+            if (searchStringHandlerList.Count > 0)
+            {
+                if ((searchStringHandlerList.Last() == "and") || (searchStringHandlerList.Last() == "or"))
+                {
+                    return false;
+                }
+            }
+
+            if (hasQuotationMarks)
+            {
+                return false;
+            }
+
+            return shouldAddAnd;
+
+        }
+        #endregion
+    }
 }
