@@ -14,10 +14,11 @@ namespace SearchStringHandler
             int maxTries = 3;
             int countQuery = 0;
             string option = "";
-            string fileName = "Projeto Final - Enunciado";
-            string fileDirectory = "pdfs";
+            string fileName = "";
+            string fileDirectory = "";
             string searchStringInput = "(teste and desenvolvimento) or programação";
 
+            // ---------------------------------------------------------------------------------------------------
 
             do
             {
@@ -46,12 +47,12 @@ namespace SearchStringHandler
                     } while (searchStringInput == "");
 
                     //TODO: Validar se o diretório existe. if(dirExists() else asks again)
-                    Console.Write("\n♦ Input a directory inside CurrentDirectory() that contains PDF files (or use pdfs as default): ");
+                    Console.Write("\n♦ Input a directory name inside CurrentDirectory() that contains PDF files (or use \"pdfs\" as default): ");
                     fileDirectory = Console.ReadLine();
 
                     //TODO: Validar se o arquivo existe. if(fileExists() else asks again)
-                    Console.Write("\n♦ Input a directory inside CurrentDirectory() that contains PDF files (or use pdfs as default): ");
-                    fileDirectory = Console.ReadLine();
+                    Console.Write("\n♦ Input a PDF file name that is inside the directory chosen (or use \"Projeto inicial - enunciado.pdf\" as default): ");
+                    fileName = Console.ReadLine();
 
                 }
                 else if (option == "3")
