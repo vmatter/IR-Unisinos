@@ -74,7 +74,8 @@ namespace SearchStringHandler
             //string searchStringInput = "(texto and info)(a and b)"; // ! Revisar questão
             //string searchStringInput = "(texto and info) (a and b)"; //! REvisar bug no contains "info"
             //string searchStringInput = "info";
-            //string searchStringInput = "desenvolvimento and teste and coragem and verificar";
+            //string searchStringInput = "desenvolvimento or teste or coragem or verificar";
+            string searchStringInput = "Desenvolvimento or aplicação";
             //string searchStringInput = "desenvolvimento or teste or coragem and verificar";
             //string searchStringInput = "teste and (promoção or testando)"; // ! Revisar questão do and(.
             //string searchStringInput = "teste and (olhando ";
@@ -86,11 +87,13 @@ namespace SearchStringHandler
             //string searchStringInput = "verificando and teste @"; // ! Revisar questão do and.
             //string searchStringInput = "(olhando and observando) or verificação -"; // ! Revisar questão do and.
             //string searchStringInput = "a and b or c and d or e";
-            string searchStringInput = "desenvolvimento AND aplicação";
+            //string searchStringInput = "desenvolvimento AND aplicação";
             //string searchStringInput = "(\"texto info\" banana and opcao)";
             //string searchStringInput = "\"(\"texto info\" banana and opcao)\"";
             //string searchStringInput = "\"teste\"";
             //string searchStringInput = "@@#((\"Classificação''' :::;';'';'~~de ;'';'~~Texto\"!@#$%$%@ OR##@! !@#!@#Classificação ;'';'~~de ;'';'~~Informação);'';'~~ AND PLN)";
+
+
             string cleanedSearchStrings = SearchStringUtils.NormalizeAndCleanText(searchStringInput);
 
             try
@@ -104,8 +107,7 @@ namespace SearchStringHandler
                 Environment.Exit(0);
                 //if (++countTentatives == maxTries) throw exception;
             }
-
-            ExecuteProgram(searchStringInput: searchStringInput, cleanedSearchStrings: cleanedSearchStrings, fileDirectory: fileDirectory, fileName: fileName);
+            ExecuteProgram(searchStringInput: searchStringInput, cleanedSearchStrings: cleanedSearchStrings, fileDirectory: fileDirectory, fileName: fileName, countQuery: countQuery);
 
         }
 
@@ -139,7 +141,7 @@ namespace SearchStringHandler
         #endregion
 
         #region ExecuteProgram
-        public static void ExecuteProgram(string searchStringInput, string cleanedSearchStrings, string fileDirectory, string fileName)
+        public static void ExecuteProgram(string searchStringInput, string cleanedSearchStrings, string fileDirectory, string fileName, int countQuery)
         {
 
             StringBuilder pdfText = new StringBuilder();
@@ -167,9 +169,7 @@ namespace SearchStringHandler
             List<List<string>> separatedExpressions = SearchStringUtils.SeparateExpressions(tokenizedSearchStrings);
             SearchStringUtils.PrintOutputs(outputName: "separatedExpressions", outputListOfLists: separatedExpressions);
 
-            string pdfTextNormalized = SearchStringUtils.NormalizeAndCleanText(pdfText.ToString());
-
-            List<Tuple<string, string>> VerifiedExpressions = SearchStringUtils.VerifyExpressions(separatedExpressions, pdfTextNormalized);
+            List<Tuple<string, string>> VerifiedExpressions = SearchStringUtils.VerifyExpressions(separatedExpressions, pdfText.ToString());
 
             StringBuilder listOfTuples = new StringBuilder();
 
@@ -180,12 +180,11 @@ namespace SearchStringHandler
 
             Console.WriteLine($"\nverifiedExpressions ({VerifiedExpressions.GetType().Name})\t\t-->\t{listOfTuples.ToString().TrimEnd()}");
 
-            Dictionary<string, int> searchTokensdictionary = SearchStringUtils.FindExpressionsInPdf(VerifiedExpressions, pdfText.ToString());
+            Dictionary<string, int> foundedTokensInPdf = SearchStringUtils.FindExpressionsInPdf(VerifiedExpressions, pdfText.ToString());
 
-            /* string pdfText = "";
-            List<Tuple<string, string>> VerifiedExpressions = SearchStringUtils.VerifyExpressions(separatedExpressions, pdfText); */
+            SearchStringUtils.PrintOutputs<Dictionary<string, int>>(outputName: "foundedTokensInPdf", outputDictionary: foundedTokensInPdf);
 
-            //SearchStringUtils.GenerateReport(++countQuery, filePath, searchStringInput, searchTokensdictionary);
+            SearchStringUtils.GenerateReport(countQuery: ++countQuery, fileName: fileName, searchString: searchStringInput, foundedTokensInPdf);
 
             // TODO: Testar o and e or sozinho na frase depois, colocar eles com aspas.
 

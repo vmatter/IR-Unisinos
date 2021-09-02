@@ -97,23 +97,23 @@ namespace SearchStringHandler
 
             string textCleaned = "";
 
-            foreach (char c in normalizedSearchString)
+            for (int i = 0; i < normalizedSearchString.Length; i++)
             {
-                var unicodeCategory = CharUnicodeInfo.GetUnicodeCategory(c);
+                var unicodeCategory = CharUnicodeInfo.GetUnicodeCategory(normalizedSearchString[i]);
 
-                if (unicodeCategory != UnicodeCategory.NonSpacingMark)
+                if (unicodeCategory != UnicodeCategory.NonSpacingMark && normalizedSearchString[i] != '\n' && normalizedSearchString[i] != '\r' && normalizedSearchString[i] != '\t')
                 {
-                    if (c == '(')
+                    if (normalizedSearchString[i] == '(')
                     {
-                        textCleaned += c + " ";
+                        textCleaned += normalizedSearchString[i] + " ";
                     }
-                    else if (c == ')')
+                    else if (normalizedSearchString[i] == ')')
                     {
-                        textCleaned += " " + c;
+                        textCleaned += " " + normalizedSearchString[i];
                     }
-                    else if (c == '\"' || Char.IsLetterOrDigit(c) || Char.IsWhiteSpace(c))
+                    else if (normalizedSearchString[i] == '\"' || Char.IsLetterOrDigit(normalizedSearchString[i]) || Char.IsWhiteSpace(normalizedSearchString[i]))
                     {
-                        textCleaned += c;
+                        textCleaned += normalizedSearchString[i];
                     }
 
                 }
@@ -267,11 +267,14 @@ namespace SearchStringHandler
         #region FindExpressionsInPdf
         public static Dictionary<string, int> FindExpressionsInPdf(List<Tuple<string, string>> searchStringTokens, string pdfText)
         {
-            List<Tuple<string, string>> expressionValidatorTuple = new List<Tuple<string, string>>();
+
+            Dictionary<string, int> repeatedTokensDictionary = new Dictionary<string, int>();
 
             string normalizedText = NormalizeAndCleanText(pdfText);
 
-            string[] splittedText = normalizedText.Split(" ");
+            string[] splittedText = normalizedText.Split(" ", StringSplitOptions.RemoveEmptyEntries);
+
+            string[] expressionsSplitted = null;
 
             int countRepeatedTokens = 0;
 
@@ -279,47 +282,78 @@ namespace SearchStringHandler
 
             for (int i = 0; i < searchStringTokens.Count; i++)
             {
+                if (searchStringTokens[i].Item2 == "True")
+                {
+                    if ((searchStringTokens[i].Item1.Contains("and ")) || (searchStringTokens[i].Item1.Contains(" and ")) || (searchStringTokens[i].Item1.Contains(" and")) && (searchStringTokens[i].Item1 != "operator"))
+                    {
+                        expressionsSplitted = searchStringTokens[i].Item1.Split(new string[] { " and", " and ", "and " }, StringSplitOptions.RemoveEmptyEntries);
 
+                        foreach (string expressionWord in expressionsSplitted)
+                        {
+                            countRepeatedTokens = 0;
+                            foreach (string item in splittedText)
+                            {
+                                if (item.Equals(expressionWord.Trim()))
+                                {
+                                    countRepeatedTokens++;
+                                }
+                            }
+                            if (repeatedTokensDictionary.ContainsKey(expressionWord.Trim()))
+                            {
+                                repeatedTokensDictionary[expressionWord.Trim()] += countRepeatedTokens;
+                            }
+                            else
+                            {
+                                repeatedTokensDictionary.Add(expressionWord.Trim(), countRepeatedTokens);
+                            }
+                        }
+                    }
+                    else if ((searchStringTokens[i].Item1.Contains("or ")) || (searchStringTokens[i].Item1.Contains(" or ")) || (searchStringTokens[i].Item1.Contains(" or")) && (searchStringTokens[i].Item1 != "operator"))
+                    {
+
+                        expressionsSplitted = searchStringTokens[i].Item1.Split(new string[] { " or", " or ", "or " }, StringSplitOptions.RemoveEmptyEntries);
+                        foreach (string expressionWord in expressionsSplitted)
+                        {
+                            countRepeatedTokens = 0;
+                            foreach (string item in splittedText)
+                            {
+                                if (item.Equals(expressionWord.Trim()))
+                                {
+                                    countRepeatedTokens++;
+                                }
+                            }
+                            if (repeatedTokensDictionary.ContainsKey(expressionWord.Trim()))
+                            {
+                                repeatedTokensDictionary[expressionWord.Trim()] += countRepeatedTokens;
+                            }
+                            else
+                            {
+                                repeatedTokensDictionary.Add(expressionWord.Trim(), countRepeatedTokens);
+                            }
+                        }
+                    }
+                }
             }
-
-            //Console.WriteLine("\nexpressionValidatorDict --> " + string.Join(", ", expressionValidatorTuple));
-
-            Environment.Exit(0);
-
-            Dictionary<string, int> repeatedTokensDictionary = new Dictionary<string, int>();
-
-            /* Console.WriteLine("repeatedTokensDictionary --> " + string.Join(", ", repeatedTokensDictionary));
-
-            Environment.Exit(0); */
 
             return repeatedTokensDictionary;
         }
         #endregion
 
         #region GenerateReport
-        public static void GenerateReport(int contQuery, string filePath, string searchString, Dictionary<string, int> searchTokensdictionary)
+        public static void GenerateReport(int countQuery, string fileName, string searchString, Dictionary<string, int> searchTokensInDictionary)
         {
-            int fileNameIndex = filePath.LastIndexOf(@"\") + 1;
-
-            string fileName = filePath.Substring(fileNameIndex, (filePath.Length - fileNameIndex));
-
-            searchTokensdictionary = new Dictionary<string, int>();
-
-            searchTokensdictionary.Add("desenvolvimento", 1);
-            searchTokensdictionary.Add("aplicação", 3);
-
             var report = new StringBuilder();
 
             var occurrences = new StringBuilder();
 
             report.AppendLine("*****************************************");
-            report.AppendLine($"Número da consulta: {contQuery}");
+            report.AppendLine($"Número da consulta: {countQuery}");
             report.AppendLine($"Nome do documento: {fileName}");
             report.AppendLine($"String de busca: {searchString}");
 
-            var lastToken = searchTokensdictionary.Last();
+            var lastToken = searchTokensInDictionary.Last();
 
-            foreach (var token in searchTokensdictionary)
+            foreach (var token in searchTokensInDictionary)
             {
                 if (!token.Equals(lastToken))
                 {
@@ -338,7 +372,7 @@ namespace SearchStringHandler
         #endregion
 
         #region PrintOutputs
-        public static void PrintOutputs<T>(string outputName, string outputPrimitive = null, List<T> outputList = null, List<List<T>> outputListOfLists = null)
+        public static void PrintOutputs<T>(string outputName, string outputPrimitive = null, List<T> outputList = null, List<List<T>> outputListOfLists = null, Dictionary<string, int> outputDictionary = null)
         {
             if (outputPrimitive != null)
             {
@@ -376,12 +410,37 @@ namespace SearchStringHandler
                 }
                 Console.WriteLine($"\n{outputName} ({outputListOfLists.GetType().Name})({outputListOfLists.GetType().Name})\t-->\t[{listOfListsOutput}]");
             }
+            else if (outputDictionary != null)
+            {
+                StringBuilder dictionaryOutput = new StringBuilder();
+
+                //TODO: trocar por dicionário ordenado...
+
+                string lastDictionaryKey = outputDictionary.Keys.Last();
+
+                foreach (var token in outputDictionary)
+                {
+
+                    if (!token.Key.Equals(lastDictionaryKey))
+                    {
+                        dictionaryOutput.Append((string.Join(" ", token)) + " ");
+                    }
+                    else
+                    {
+                        dictionaryOutput.Append((string.Join(" ", token)));
+                    }
+                }
+                Console.WriteLine($"\n{outputName} ({dictionaryOutput.GetType().Name})\t-->\t[{dictionaryOutput}]");
+
+            }
         }
         #endregion
 
         #region VerifyExpressions
-        public static List<Tuple<string, string>> VerifyExpressions(List<List<string>> searchStringTokens, string normalizedText)
+        public static List<Tuple<string, string>> VerifyExpressions(List<List<string>> searchStringTokens, string pdfText)
         {
+
+            string normalizedText = NormalizeAndCleanText(pdfText);
             bool isAnd = false;
             bool isOr = false;
             string keyExpression = "";
@@ -390,9 +449,6 @@ namespace SearchStringHandler
             List<string> lastExpression = searchStringTokens.Last();
 
             string auxString = "";
-
-            // "teste and (verificação de linguagens)"
-            // "a or b and c and d or e"
 
             foreach (List<string> expression in searchStringTokens)
             {
@@ -543,15 +599,6 @@ namespace SearchStringHandler
         }
         #endregion
 
-        #region CountWords
-
-        public static Dictionary<string, int> CountWords()
-        {
-            Dictionary<string, int> repeatedTokensDictionary = new Dictionary<string, int>();
-            return repeatedTokensDictionary;
-        }
-        #endregion
-
         #region AddAndValidation
         public static bool AddAndValidation(List<string> searchStringHandlerList, string searchWord, bool hasQuotationMarks)
         {
@@ -569,6 +616,10 @@ namespace SearchStringHandler
                 {
                     return false;
                 }
+            }
+            else if (searchStringHandlerList.Count == 0)
+            {
+                return false;
             }
 
             if (hasQuotationMarks)
