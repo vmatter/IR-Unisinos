@@ -181,7 +181,7 @@ namespace SearchStringHandler
             {
                 searchWord = word;
 
-                if (searchWord[0] == '\"')
+                if ((searchWord != "") && (searchWord[0] == '\"'))
                 {
                     hasQuotationMarks = true;
                     quotationString = searchWord;
@@ -235,7 +235,11 @@ namespace SearchStringHandler
                 if (regexString[0] != '(')
                 {
                     int indexRegexString = regexString.IndexOf('(');
-                    regexResult.Add(regexString[0..indexRegexString]);
+                    string aux = regexString[0..indexRegexString];
+                    if (!String.IsNullOrWhiteSpace(aux))
+                    {
+                        regexResult.Add(aux);
+                    }
                     regexString = regexString.Remove(0, indexRegexString);
                 }
                 Match regexMatch = Regex.Match(regexString, pattern, RegexOptions.IgnoreCase);
@@ -261,31 +265,22 @@ namespace SearchStringHandler
         #endregion
 
         #region FindExpressionsInPdf
-        public static Dictionary<string, int> FindExpressionsInPdf(List<List<string>> searchStringTokens, string filePath)
+        public static Dictionary<string, int> FindExpressionsInPdf(List<Tuple<string, string>> searchStringTokens, string pdfText)
         {
             List<Tuple<string, string>> expressionValidatorTuple = new List<Tuple<string, string>>();
 
-            List<string> aux = new List<string>();
+            string normalizedText = NormalizeAndCleanText(pdfText);
 
-            //string text = "texto e info";
-            string text = "teste de verificação de Linguagens";
-
-            string normalizedText = NormalizeAndCleanText(text);
-
-            string[] splittedText = null;
+            string[] splittedText = normalizedText.Split(" ");
 
             int countRepeatedTokens = 0;
 
-            List<string> allWordsList = new List<string>();
-            List<string> listOfAnd = new List<string>();
-            List<string> listOfOr = new List<string>();
+            // searchStringTokens
 
-            // TODO: Testar o and e or sozinho na frase depois, colocar eles com aspas.
+            for (int i = 0; i < searchStringTokens.Count; i++)
+            {
 
-            // TODO: Fazer a leitura do PDF
-
-
-            expressionValidatorTuple = VerifyExpressions(searchStringTokens, normalizedText);
+            }
 
             //Console.WriteLine("\nexpressionValidatorDict --> " + string.Join(", ", expressionValidatorTuple));
 
