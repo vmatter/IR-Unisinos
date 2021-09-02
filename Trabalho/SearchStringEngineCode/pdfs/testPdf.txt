@@ -80,23 +80,3 @@ dos seus integrantes.
 também sejam incluídos na aplicação desenvolvida. 
  No dia 01/09/2021, a partir das 17h, os professores acessarão os endereços do 
 GitHub informados e farão um clone das aplicações para avaliação. 
-Desenvolvimento de Aplicações para Mineração de Texto 
-em C# 
- 
-Márcio Garcia Martins e Luciano Ignaczak 
- 
- 
-Método de avaliação 
- Os critérios de avaliação do projeto são apresentados a seguir. Também 
-informamos o peso que será considerado para cada item na correção: 
-1. Contagem correta das palavras que compõem a string de busca (peso: 5 
-pontos); 
-2. Tratamento correto do operador AND (apresentar se todas as palavras 
-estão presente no documento) (peso: 1 ponto); 
-3. Tratamento da variação das palavras em relação aos acentos e cedilha 
-(peso: 2 pontos); 
-4. Gravação de todas as informações associadas ao cache de consultas 
-(peso: 2 pontos); 
-5. Implementação dos critérios EXTRA para tratamento de múltiplos 
-operadores e ordem de precedência (parênteses) (valor extra: 1 ponto na 
-média final, considerando que a nota máxima do curso é 10). 

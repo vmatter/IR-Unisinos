@@ -7,6 +7,7 @@ using System.Text;
 using iTextSharp.text.pdf;
 using iTextSharp.text.pdf.parser;
 using System.Text.RegularExpressions;
+using iTextSharp.text;
 
 namespace SearchStringHandler
 {
@@ -282,7 +283,7 @@ namespace SearchStringHandler
             int index = 0;
 
             // Metodo que retorna 
-            while (index != -1)
+            /* while (index != -1)
             {
                 index = normalizedText.IndexOf(teste, index + teste.Length);
 
@@ -290,13 +291,13 @@ namespace SearchStringHandler
                 {
                     listTest.Add(index);
                 }
-            }
+            } */
 
-            Console.WriteLine("listTest Count --> " + listTest.Count());
+            //Console.WriteLine("\nlistTest Count --> " + listTest.Count());
 
-            Environment.Exit(0);
+            //Environment.Exit(0);
 
-            //string[] splittedText = normalizedText.Split(" ", StringSplitOptions.RemoveEmptyEntries);
+            string[] splittedText = normalizedText.Split(" ", StringSplitOptions.RemoveEmptyEntries);
 
             string[] expressionsSplitted = null;
 
@@ -313,13 +314,13 @@ namespace SearchStringHandler
                         foreach (string expressionWord in expressionsSplitted)
                         {
                             countRepeatedTokens = 0;
-                            /* foreach (string item in splittedText)
+                            foreach (string item in splittedText)
                             {
                                 if (item.Equals(" " + expressionWord.Trim() + " "))
                                 {
                                     countRepeatedTokens++;
                                 }
-                            } */
+                            }
                             if (repeatedTokensDictionary.ContainsKey(expressionWord.Trim()))
                             {
                                 repeatedTokensDictionary[expressionWord.Trim()] += countRepeatedTokens;
@@ -337,13 +338,13 @@ namespace SearchStringHandler
                         foreach (string expressionWord in expressionsSplitted)
                         {
                             countRepeatedTokens = 0;
-                            /* foreach (string item in splittedText)
+                            foreach (string item in splittedText)
                             {
                                 if (item.Contains(" " + expressionWord.Trim() + " "))
                                 {
                                     countRepeatedTokens++;
                                 }
-                            } */
+                            }
                             if (repeatedTokensDictionary.ContainsKey(expressionWord.Trim()))
                             {
                                 repeatedTokensDictionary[expressionWord.Trim()] += countRepeatedTokens;
@@ -389,10 +390,23 @@ namespace SearchStringHandler
             report.AppendLine($"Ocorrências: {occurrences}");
             report.AppendLine("*****************************************");
 
+            File.WriteAllText($@"{Directory.GetCurrentDirectory()}\generatedReport\generatedReport.txt", report.ToString());
+
+            StreamReader txtReport = new StreamReader($@"{Directory.GetCurrentDirectory()}\generatedReport\generatedReport.txt");
+
+            Document pdfReport = new Document();
+
+            PdfWriter.GetInstance(pdfReport, new FileStream($@"{Directory.GetCurrentDirectory()}\generatedReport\generatedReport.pdf", FileMode.Create));
+
+            pdfReport.Open();
+
+            pdfReport.Add(new Paragraph(txtReport.ReadToEnd()));
+
+            pdfReport.Close();
+
             Console.WriteLine("\n" + report);
         }
         #endregion
-
         #region PrintOutputs
         public static void PrintOutputs<T>(string outputName, string outputPrimitive = null, List<T> outputList = null, List<List<T>> outputListOfLists = null, Dictionary<string, int> outputDictionary = null)
         {
@@ -631,7 +645,7 @@ namespace SearchStringHandler
         #endregion
 
         #region AddAndValidation
-        public static bool AddAndValidation(List<string> searchStringHandlerList, string searchWord, bool hasQuotationMarks)
+        private static bool AddAndValidation(List<string> searchStringHandlerList, string searchWord, bool hasQuotationMarks)
         {
 
             bool shouldAddAnd = true;
