@@ -20,7 +20,7 @@ namespace SearchStringHandler
 
             // ---------------------------------------------------------------------------------------------------
 
-            do
+            /* do
             {
                 ShowMenu();
 
@@ -64,17 +64,13 @@ namespace SearchStringHandler
                     Console.Clear();
                 }
 
-            } while (option != "5");
+            } while (option != "5"); */
 
             // ---------------------------------------------------------------------------------------------------
 
-            Environment.Exit(0);
+            //Environment.Exit(0);
 
-            SearchStringUtils.PrintOutputs<string>(outputName: "fileNameInput", outputPrimitive: fileName);
-            SearchStringUtils.PrintOutputs<string>(outputName: "fileDirectoryInput", outputPrimitive: fileDirectory);
-            SearchStringUtils.PrintOutputs<string>(outputName: "searchStringInput", outputPrimitive: searchStringInput);
-            string cleanedSearchStrings = SearchStringUtils.NormalizeAndCleanText(searchStringInput);
-            SearchStringUtils.PrintOutputs<string>(outputName: "normalizedSearchString", outputPrimitive: cleanedSearchStrings);
+
 
             //? Testar strings
             //string text = "Em um mundo onde a informação tornou-se um dos recursos abundantes mais relevantes para a sociedade, é imprescindível que além da extração segura dos dados, realizar uma classificação significativa dos dados adquiridos também deve ser possível, visto que estes podem conter informações sensíveis de entidades. Uma das formas mais utilizadas de extração de informação é através de textos, portanto técnicas de Processamento de Linguagem Natural (PLN) vêm sendo vastamente exploradas. Levando isso em consideração, o objetivo deste trabalho foi encontrar arquiteturas sistêmicas capazes de aplicar classificação em textos e extrair com sucesso informações relevantes. Uma revisão sistemática da literatura (RSL) foi conduzida para analisar artigos acadêmicos publicados de 2010 até o início de janeiro de 2021. O processo de triagem resultou em uma população final de 21 estudos de um total de 234 analisados. A filtragem inclui a remoção de artigos não relacionados a uma classificação de texto ou arquitetura sistêmica de classificação de informações. Neste artigo, propostas e resultados que contribuem para os desafios de classificação de texto são apresentados considerando quatro questões de pesquisa. A conclusão do estudo atestou que não existe uma arquitetura sistêmica ou algoritmo de classificação específico capaz de ser considerado o estado da arte no campo da classificação de texto.";
@@ -96,6 +92,9 @@ namespace SearchStringHandler
             //string searchStringInput = "\"(\"texto info\" banana and opcao)\"";
             //string searchStringInput = "\"teste\"";
             //string searchStringInput = "@@#((\"Classificação''' :::;';'';'~~de ;'';'~~Texto\"!@#$%$%@ OR##@! !@#!@#Classificação ;'';'~~de ;'';'~~Informação);'';'~~ AND PLN)";
+            SearchStringUtils.PrintOutputs<string>(outputName: "searchStringInserted", outputPrimitive: searchStringInput);
+            string cleanedSearchStrings = SearchStringUtils.NormalizeAndCleanText(searchStringInput);
+            SearchStringUtils.PrintOutputs<string>(outputName: "normalizedSearchString", outputPrimitive: cleanedSearchStrings);
 
             try
             {
@@ -109,31 +108,7 @@ namespace SearchStringHandler
                 //if (++countTentatives == maxTries) throw exception;
             }
 
-            List<string> tokenizedSearchStrings = SearchStringUtils.TokenizeSearchString(cleanedSearchStrings);
-            SearchStringUtils.PrintOutputs(outputName: "tokenizedSearchStrings", outputList: tokenizedSearchStrings);
-
-            List<List<string>> separatedExpressions = SearchStringUtils.SeparateExpressions(tokenizedSearchStrings);
-            SearchStringUtils.PrintOutputs(outputName: "separatedExpressions", outputListOfLists: separatedExpressions);
-
-            string pdfText = SearchStringUtils.ReadTextInPdf(fileDirectory: fileDirectory, fileName: fileName);
-
-            List<Tuple<string, string>> VerifiedExpressions = SearchStringUtils.VerifyExpressions(separatedExpressions, pdfText);
-
-            StringBuilder listOfTuples = new StringBuilder();
-
-            foreach (var expressions in VerifiedExpressions)
-            {
-                listOfTuples.Append("[" + expressions.Item1 + ", " + expressions.Item2 + "] ");
-            }
-
-            Console.WriteLine($"\nVerifiedExpressions ({VerifiedExpressions.GetType().Name})\t\t-->\t{listOfTuples.ToString().TrimEnd()}");
-
-            //Dictionary<string, int> searchTokensdictionary = SearchStringUtils.FindExpressionsInPdf(separatedExpressions, filePath);
-
-            /* string pdfText = "";
-            List<Tuple<string, string>> VerifiedExpressions = SearchStringUtils.VerifyExpressions(separatedExpressions, pdfText); */
-
-            //SearchStringUtils.GenerateReport(++countQuery, filePath, searchStringInput, searchTokensdictionary);
+            ExecuteProgram(cleanedSearchStrings: cleanedSearchStrings, fileDirectory: fileDirectory, fileName: fileName);
 
         }
 
@@ -167,8 +142,49 @@ namespace SearchStringHandler
         #endregion
 
         #region ExecuteProgram
-        public static void ExecuteProgram()
+        public static void ExecuteProgram(string cleanedSearchStrings, string fileDirectory, string fileName)
         {
+
+            StringBuilder pdfText = new StringBuilder();
+
+            if (fileDirectory == "")
+            {
+                fileDirectory = "pdfs";
+            }
+            if (fileName == "")
+            {
+                fileName = "Projeto inicial - enunciado.pdf";
+            }
+
+            pdfText.Append(SearchStringUtils.ReadTextInPdf(fileDirectory: fileDirectory, fileName: fileName));
+
+            SearchStringUtils.PrintOutputs<string>(outputName: "fileNameInserted", outputPrimitive: fileName);
+            SearchStringUtils.PrintOutputs<string>(outputName: "fileDirectoryInserted", outputPrimitive: fileDirectory);
+
+            List<string> tokenizedSearchStrings = SearchStringUtils.TokenizeSearchString(cleanedSearchStrings);
+            SearchStringUtils.PrintOutputs(outputName: "tokenizedSearchStrings", outputList: tokenizedSearchStrings);
+
+            List<List<string>> separatedExpressions = SearchStringUtils.SeparateExpressions(tokenizedSearchStrings);
+            SearchStringUtils.PrintOutputs(outputName: "separatedExpressions", outputListOfLists: separatedExpressions);
+
+            List<Tuple<string, string>> VerifiedExpressions = SearchStringUtils.VerifyExpressions(separatedExpressions, pdfText.ToString());
+
+            StringBuilder listOfTuples = new StringBuilder();
+
+            foreach (var expressions in VerifiedExpressions)
+            {
+                listOfTuples.Append("[" + expressions.Item1 + ", " + expressions.Item2 + "] ");
+            }
+
+            Console.WriteLine($"\nverifiedExpressions ({VerifiedExpressions.GetType().Name})\t\t-->\t{listOfTuples.ToString().TrimEnd()}");
+
+            //Dictionary<string, int> searchTokensdictionary = SearchStringUtils.FindExpressionsInPdf(separatedExpressions, filePath);
+
+            /* string pdfText = "";
+            List<Tuple<string, string>> VerifiedExpressions = SearchStringUtils.VerifyExpressions(separatedExpressions, pdfText); */
+
+            //SearchStringUtils.GenerateReport(++countQuery, filePath, searchStringInput, searchTokensdictionary);
+
 
         }
         #endregion

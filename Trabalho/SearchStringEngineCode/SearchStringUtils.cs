@@ -50,7 +50,7 @@ namespace SearchStringHandler
         #endregion
 
         #region ReadTextInPdf
-        public static string ReadTextInPdf(string fileDirectory = "pdfs", string fileName = "Projeto inicial - enunciado")
+        public static string ReadTextInPdf(string fileDirectory, string fileName)
         {
             // TODO: Adicionar o diretorio escolhido, directoryName.
             string filePath = "";
@@ -67,7 +67,7 @@ namespace SearchStringHandler
             using (PdfReader reader = new PdfReader(filePath))
             {
 
-                using StreamWriter file = new(Directory.GetCurrentDirectory() + @"\pdfs\" + @"\testPdf.txt", append: false);
+                using StreamWriter testFile = new(Directory.GetCurrentDirectory() + @"\pdfs\" + @"\testPdf.txt", append: false);
                 {
                     for (int i = 1; i <= reader.NumberOfPages; i++)
                     {
@@ -76,7 +76,7 @@ namespace SearchStringHandler
                         foreach (string linha in linhas)
                         {
                             pdfText.Append($"{linha}{"\n"}");
-                            file.WriteLine(linha);
+                            testFile.WriteLine(linha);
                         }
                     }
                 }
