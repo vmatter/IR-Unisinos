@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using System.IO;
 
 namespace SearchStringHandler
 {
@@ -16,6 +17,11 @@ namespace SearchStringHandler
             string option = "";
             string fileName = "";
             string fileDirectory = "";
+            string fileDirectoryValidation = "";
+            string fileExists = "";
+            int choosenOption = 0;
+            string choosenFile = "";
+            string chooseTxtFile = "";
             //string searchStringInput = "(teste and desenvolvimento) or programação";
 
             // ---------------------------------------------------------------------------------------------------
@@ -46,18 +52,167 @@ namespace SearchStringHandler
 
                     } while (searchStringInput == "");
 
-                    //TODO: Validar se o diretório existe. if(dirExists() else asks again)
-                    Console.Write("\n♦ Input a directory name inside CurrentDirectory() that contains PDF files (or use \"pdfs\" as default): ");
-                    fileDirectory = Console.ReadLine();
+                    do
+                    {
+                        Console.Write("\n♦ Input a directory name inside CurrentDirectory() that contains PDF files (or use \"pdfs\" as default): ");
+                        Console.Write("\n♦ The current path is: ");
+                        Console.Write(Directory.GetCurrentDirectory());
+                        fileDirectory = Console.ReadLine();
+                        fileDirectoryValidation = Directory.GetCurrentDirectory() + fileDirectory;
+                        if (Directory.Exists(fileDirectoryValidation) is false)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.Write("\n♦ Directory doesn't exists, write a valid directory!!\n");
+                            Console.ForegroundColor = ConsoleColor.White;
+                        }
+                    } while (Directory.Exists(fileDirectoryValidation) is false);
 
-                    //TODO: Validar se o arquivo existe. if(fileExists() else asks again)
-                    Console.Write("\n♦ Input a PDF file name that is inside the directory chosen (or use \"Projeto inicial - enunciado.pdf\" as default): ");
-                    fileName = Console.ReadLine();
 
+                    do
+                    {
+                        Console.WriteLine("Input the name of your file: ");
+                        choosenFile = Console.ReadLine();
+                        if (File.Exists(choosenFile) is false)
+                        {
+
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.Write("\n♦ This directory doesn't contain this file, please choose a valid option below\n");
+                            Console.ForegroundColor = ConsoleColor.White;
+                            string[] arquivos = Directory.GetFiles(fileDirectoryValidation);
+                            int cont = 0;
+                            Console.WriteLine("Arquivos: ");
+                            foreach (string arq in arquivos)
+                            {
+                                Console.Write("Opção: " + cont + ": ");
+                                int fileNameIndex = arq.LastIndexOf(@"\") + 1;
+                                string fileNames = arq.Substring(fileNameIndex, (arq.Length - fileNameIndex));
+                                Console.WriteLine(fileNames);
+                                cont++;
+                            }
+
+                            Console.WriteLine("Digite o número da opção desejada: ");
+                            choosenOption = Convert.ToInt16(Console.ReadLine());
+                            if (choosenOption >= 0 && choosenOption < arquivos.Length)
+                            {
+                                int fileNameIndex = arquivos[choosenOption].LastIndexOf(@"\") + 1;
+                                choosenFile = arquivos[choosenOption].Substring(fileNameIndex, (arquivos[choosenOption].Length - fileNameIndex));
+                                Console.WriteLine("Arquivo selecionardo: " + choosenFile);
+                            }
+                            else
+                            {
+                                choosenFile = "";
+                            }
+                        }
+                    } while (choosenFile == "");
                 }
                 else if (option == "3")
                 {
+                    //TODO: A validação se o TXT contém algo será no método de leitura, certo?
+                    do
+                    {
+                        Console.Write("\n♦ Input a directory name inside CurrentDirectory() that contains ypur TXT file (or use \"txtbusca\" as default): ");
+                        Console.Write("\n♦ The current path is: ");
+                        Console.Write(Directory.GetCurrentDirectory());
+                        fileDirectory = Console.ReadLine();
+                        fileDirectoryValidation = Directory.GetCurrentDirectory() + fileDirectory;
+                        if (Directory.Exists(fileDirectoryValidation) is false)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.Write("\n♦ Directory doesn't exists, write a valid directory!!\n");
+                            Console.ForegroundColor = ConsoleColor.White;
+                        }
+                    } while (Directory.Exists(fileDirectoryValidation) is false);
 
+                    do
+                    {
+                        Console.WriteLine("Input the name of your TXT file: ");
+                        chooseTxtFile = Console.ReadLine();
+                        if (File.Exists(chooseTxtFile) is false)
+                        {
+
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.Write("\n♦ This directory doesn't contain this file, please choose a valid option below\n");
+                            Console.ForegroundColor = ConsoleColor.White;
+                            string[] arquivos = Directory.GetFiles(fileDirectoryValidation);
+                            int cont = 0;
+                            Console.WriteLine("Arquivos: ");
+                            foreach (string arq in arquivos)
+                            {
+                                Console.Write("Opção: " + cont + ": ");
+                                int fileNameIndex = arq.LastIndexOf(@"\") + 1;
+                                string fileNames = arq.Substring(fileNameIndex, (arq.Length - fileNameIndex));
+                                Console.WriteLine(fileNames);
+                                cont++;
+                            }
+
+                            Console.WriteLine("Digite o número da opção desejada: ");
+                            choosenOption = Convert.ToInt16(Console.ReadLine());
+                            if (choosenOption >= 0 && choosenOption < arquivos.Length)
+                            {
+                                int fileNameIndex = arquivos[choosenOption].LastIndexOf(@"\") + 1;
+                                chooseTxtFile = arquivos[choosenOption].Substring(fileNameIndex, (arquivos[choosenOption].Length - fileNameIndex));
+                                Console.WriteLine("Arquivo selecionardo: " + chooseTxtFile);
+                            }
+                            else
+                            {
+                                chooseTxtFile = "";
+                            }
+                        }
+                    } while (chooseTxtFile == "");
+
+
+                    do
+                    {
+                        Console.Write("\n♦ Input a directory name inside CurrentDirectory() that contains PDF files (or use \"pdfs\" as default): ");
+                        Console.Write("\n♦ The current path is: ");
+                        Console.Write(Directory.GetCurrentDirectory());
+                        fileDirectory = Console.ReadLine();
+                        fileDirectoryValidation = Directory.GetCurrentDirectory() + fileDirectory;
+                        if (Directory.Exists(fileDirectoryValidation) is false)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.Write("\n♦ Directory doesn't exists, write a valid directory!!\n");
+                            Console.ForegroundColor = ConsoleColor.White;
+                        }
+                    } while (Directory.Exists(fileDirectoryValidation) is false);
+
+
+                    do
+                    {
+                        Console.WriteLine("Input the name of your file: ");
+                        choosenFile = Console.ReadLine();
+                        if (File.Exists(choosenFile) is false)
+                        {
+
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.Write("\n♦ This directory doesn't contain this file, please choose a valid option below\n");
+                            Console.ForegroundColor = ConsoleColor.White;
+                            string[] arquivos = Directory.GetFiles(fileDirectoryValidation);
+                            int cont = 0;
+                            Console.WriteLine("Arquivos: ");
+                            foreach (string arq in arquivos)
+                            {
+                                Console.Write("Opção: " + cont + ": ");
+                                int fileNameIndex = arq.LastIndexOf(@"\") + 1;
+                                string fileNames = arq.Substring(fileNameIndex, (arq.Length - fileNameIndex));
+                                Console.WriteLine(fileNames);
+                                cont++;
+                            }
+
+                            Console.WriteLine("Digite o número da opção desejada: ");
+                            choosenOption = Convert.ToInt16(Console.ReadLine());
+                            if (choosenOption >= 0 && choosenOption < arquivos.Length)
+                            {
+                                int fileNameIndex = arquivos[choosenOption].LastIndexOf(@"\") + 1;
+                                choosenFile = arquivos[choosenOption].Substring(fileNameIndex, (arquivos[choosenOption].Length - fileNameIndex));
+                                Console.WriteLine("Arquivo selecionardo: " + choosenFile);
+                            }
+                            else
+                            {
+                                choosenFile = "";
+                            }
+                        }
+                    } while (choosenFile == "");
                 }
                 else
                 {
