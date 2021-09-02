@@ -2,5 +2,5 @@
 Número da consulta: 1
 Nome do documento: Projeto inicial - enunciado.pdf
 String de busca: desenvolvimento AND aplicação
-Ocorrências: desenvolvimento(0), aplicacao(0)
+Ocorrências: desenvolvimento(5), aplicacao(19)
 *****************************************

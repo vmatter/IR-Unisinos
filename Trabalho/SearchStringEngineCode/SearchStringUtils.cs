@@ -316,7 +316,7 @@ namespace SearchStringHandler
                             countRepeatedTokens = 0;
                             foreach (string item in splittedText)
                             {
-                                if (item.Equals(" " + expressionWord.Trim() + " "))
+                                if (item.Equals(expressionWord.Trim()))
                                 {
                                     countRepeatedTokens++;
                                 }
@@ -340,7 +340,7 @@ namespace SearchStringHandler
                             countRepeatedTokens = 0;
                             foreach (string item in splittedText)
                             {
-                                if (item.Contains(" " + expressionWord.Trim() + " "))
+                                if (item.Equals(expressionWord.Trim()))
                                 {
                                     countRepeatedTokens++;
                                 }
