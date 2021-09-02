@@ -8,6 +8,7 @@ using iTextSharp.text.pdf;
 using iTextSharp.text.pdf.parser;
 using System.Text.RegularExpressions;
 using iTextSharp.text;
+using System.Diagnostics;
 
 namespace SearchStringHandler
 {
@@ -390,13 +391,15 @@ namespace SearchStringHandler
             report.AppendLine($"Ocorrências: {occurrences}");
             report.AppendLine("*****************************************");
 
-            File.WriteAllText($@"{Directory.GetCurrentDirectory()}\generatedReport\generatedReport.txt", report.ToString());
+            string directoryPath = $@"{Directory.GetCurrentDirectory()}\generatedReport";
 
-            StreamReader txtReport = new StreamReader($@"{Directory.GetCurrentDirectory()}\generatedReport\generatedReport.txt");
+            File.WriteAllText($@"{directoryPath}\generatedReport.txt", report.ToString());
+
+            StreamReader txtReport = new StreamReader($@"{directoryPath}\generatedReport.txt");
 
             Document pdfReport = new Document();
 
-            PdfWriter.GetInstance(pdfReport, new FileStream($@"{Directory.GetCurrentDirectory()}\generatedReport\generatedReport.pdf", FileMode.Create));
+            PdfWriter.GetInstance(pdfReport, new FileStream($@"{directoryPath}\generatedReport.pdf", FileMode.Create));
 
             pdfReport.Open();
 
@@ -405,6 +408,13 @@ namespace SearchStringHandler
             pdfReport.Close();
 
             Console.WriteLine("\n" + report);
+
+            Process process = new Process();
+            process.StartInfo = new ProcessStartInfo($@"{directoryPath}\generatedReport.pdf")
+            {
+                UseShellExecute = true
+            };
+            process.Start();
         }
         #endregion
         #region PrintOutputs
