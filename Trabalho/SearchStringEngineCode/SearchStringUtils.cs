@@ -64,21 +64,27 @@ namespace SearchStringHandler
                 filePath = Directory.GetCurrentDirectory() + $@"\{fileDirectory}\" + fileName;
             }
 
+
+
             using (PdfReader reader = new PdfReader(filePath))
             {
 
                 using StreamWriter testFile = new(Directory.GetCurrentDirectory() + @"\pdfs\" + @"\testPdf.txt", append: false);
                 {
-                    for (int i = 1; i <= reader.NumberOfPages; i++)
-                    {
-                        string aux = PdfTextExtractor.GetTextFromPage(reader, i);
-                        string[] linhas = aux.Split('\n');
-                        foreach (string linha in linhas)
+                    Enumerable.Range(0, reader.NumberOfPages)
+                       .Skip(1)
+                        .ToList()
+                        .ForEach(i =>
                         {
-                            pdfText.Append($"{linha}{"\n"}");
-                            testFile.WriteLine(linha);
-                        }
-                    }
+                            string aux = PdfTextExtractor.GetTextFromPage(reader, i);
+                            string[] linhas = aux.Split('\n');
+                            foreach (string linha in linhas)
+                            {
+                                pdfText.Append($"{linha}{"\n"}");
+                                testFile.WriteLine(linha);
+                            }
+
+                        });
                 }
             }
 
@@ -132,11 +138,6 @@ namespace SearchStringHandler
             int countClosedParentheses = 0;
 
             // TODO: Validar se a string for vazia.
-
-            if (searchStringCleaned[0] == '\"' && searchStringCleaned[searchStringCleaned.Length - 1] == '\"')
-            {
-                throw new InvalidOperationException("\nString de busca está toda entre aspas.");
-            }
 
             if (searchStringCleaned.Length > 0)
             {
@@ -272,13 +273,34 @@ namespace SearchStringHandler
 
             string normalizedText = NormalizeAndCleanText(pdfText);
 
-            string[] splittedText = normalizedText.Split(" ", StringSplitOptions.RemoveEmptyEntries);
+            int searchCount = 0;
+
+            string teste = "desenvolvimento de aplicacoes";
+
+            List<int> listTest = new List<int>();
+
+            int index = 0;
+
+            // Metodo que retorna 
+            while (index != -1)
+            {
+                index = normalizedText.IndexOf(teste, index + teste.Length);
+
+                if (index >= 0)
+                {
+                    listTest.Add(index);
+                }
+            }
+
+            Console.WriteLine("listTest Count --> " + listTest.Count());
+
+            Environment.Exit(0);
+
+            //string[] splittedText = normalizedText.Split(" ", StringSplitOptions.RemoveEmptyEntries);
 
             string[] expressionsSplitted = null;
 
             int countRepeatedTokens = 0;
-
-            // searchStringTokens
 
             for (int i = 0; i < searchStringTokens.Count; i++)
             {
@@ -291,13 +313,13 @@ namespace SearchStringHandler
                         foreach (string expressionWord in expressionsSplitted)
                         {
                             countRepeatedTokens = 0;
-                            foreach (string item in splittedText)
+                            /* foreach (string item in splittedText)
                             {
-                                if (item.Equals(expressionWord.Trim()))
+                                if (item.Equals(" " + expressionWord.Trim() + " "))
                                 {
                                     countRepeatedTokens++;
                                 }
-                            }
+                            } */
                             if (repeatedTokensDictionary.ContainsKey(expressionWord.Trim()))
                             {
                                 repeatedTokensDictionary[expressionWord.Trim()] += countRepeatedTokens;
@@ -315,13 +337,13 @@ namespace SearchStringHandler
                         foreach (string expressionWord in expressionsSplitted)
                         {
                             countRepeatedTokens = 0;
-                            foreach (string item in splittedText)
+                            /* foreach (string item in splittedText)
                             {
-                                if (item.Equals(expressionWord.Trim()))
+                                if (item.Contains(" " + expressionWord.Trim() + " "))
                                 {
                                     countRepeatedTokens++;
                                 }
-                            }
+                            } */
                             if (repeatedTokensDictionary.ContainsKey(expressionWord.Trim()))
                             {
                                 repeatedTokensDictionary[expressionWord.Trim()] += countRepeatedTokens;
@@ -416,7 +438,7 @@ namespace SearchStringHandler
 
                 //TODO: trocar por dicionário ordenado...
 
-                string lastDictionaryKey = outputDictionary.Keys.Last();
+                string lastDictionaryKey = outputDictionary.Keys.Last().ToString();
 
                 foreach (var token in outputDictionary)
                 {
@@ -459,7 +481,14 @@ namespace SearchStringHandler
                 for (int i = 0; i < expression.Count; i++)
                 {
 
-                    keyExpression += " " + expression[i];
+                    if (expression[i].Contains("\""))
+                    {
+                        keyExpression += " " + expression[i].Trim().Replace("\"", "");
+                    }
+                    else
+                    {
+                        keyExpression += " " + expression[i];
+                    }
 
                     if (expression[i] == "and")
                     {
@@ -568,7 +597,9 @@ namespace SearchStringHandler
 
             foreach (string word in splittedExpression)
             {
+
                 string searchWord = " " + word.Trim() + " ";
+
                 if (isAnd)
                 {
                     if (!normalizedText.Contains(searchWord))

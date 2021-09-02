@@ -70,12 +70,13 @@ namespace SearchStringHandler
 
             //? Testar strings
             //string text = "Em um mundo onde a informação tornou-se um dos recursos abundantes mais relevantes para a sociedade, é imprescindível que além da extração segura dos dados, realizar uma classificação significativa dos dados adquiridos também deve ser possível, visto que estes podem conter informações sensíveis de entidades. Uma das formas mais utilizadas de extração de informação é através de textos, portanto técnicas de Processamento de Linguagem Natural (PLN) vêm sendo vastamente exploradas. Levando isso em consideração, o objetivo deste trabalho foi encontrar arquiteturas sistêmicas capazes de aplicar classificação em textos e extrair com sucesso informações relevantes. Uma revisão sistemática da literatura (RSL) foi conduzida para analisar artigos acadêmicos publicados de 2010 até o início de janeiro de 2021. O processo de triagem resultou em uma população final de 21 estudos de um total de 234 analisados. A filtragem inclui a remoção de artigos não relacionados a uma classificação de texto ou arquitetura sistêmica de classificação de informações. Neste artigo, propostas e resultados que contribuem para os desafios de classificação de texto são apresentados considerando quatro questões de pesquisa. A conclusão do estudo atestou que não existe uma arquitetura sistêmica ou algoritmo de classificação específico capaz de ser considerado o estado da arte no campo da classificação de texto.";
-            //string searchStringInput = "(texto and info) or (a and b)";
+            string searchStringInput = "(texto and info) or (a and b)";
             //string searchStringInput = "(texto and info)(a and b)"; // ! Revisar questão
             //string searchStringInput = "(texto and info) (a and b)"; //! REvisar bug no contains "info"
             //string searchStringInput = "info";
             //string searchStringInput = "desenvolvimento or teste or coragem or verificar";
-            string searchStringInput = "Desenvolvimento or aplicação";
+            //string searchStringInput = "Desenvolvimento or aplicação";
+            //string searchStringInput = "\"Desenvolvimento de Aplicações\" AND \"Mineração de Texto\"";
             //string searchStringInput = "desenvolvimento or teste or coragem and verificar";
             //string searchStringInput = "teste and (promoção or testando)"; // ! Revisar questão do and(.
             //string searchStringInput = "teste and (olhando ";
