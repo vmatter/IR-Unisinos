@@ -3,16 +3,34 @@
 *****************************************
 Número da consulta: 1
 Nome do documento: Projeto inicial - enunciado.pdf
-String de busca: texto
+String de busca: desenvolvimento and mineracao
 String de busca é válida: True
-Ocorrências: texto(6)
+Ocorrências: desenvolvimento(6), mineracao(3)
+*****************************************
+
+
+*****************************************
+Número da consulta: 2
+Nome do documento: Projeto inicial - enunciado.pdf
+String de busca: Ignaczak and Marcio
+String de busca é válida: True
+Ocorrências: ignaczak(3), marcio(3)
+*****************************************
+
+
+*****************************************
+Número da consulta: 3
+Nome do documento: Projeto inicial - enunciado.pdf
+String de busca: marcio and ignakak
+String de busca é válida: False
+Ocorrências: marcio(3), ignakak(0)
 *****************************************
 
 
 *****************************************
 Número da consulta: 1
 Nome do documento: Projeto inicial - enunciado.pdf
-String de busca: texto
-String de busca é válida: True
-Ocorrências: texto(6)
+String de busca: teste
+String de busca é válida: False
+Ocorrências: teste(0)
 *****************************************

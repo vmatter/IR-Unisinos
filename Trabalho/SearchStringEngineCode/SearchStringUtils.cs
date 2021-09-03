@@ -193,14 +193,34 @@ namespace SearchStringHandler
             string quotationString = "";
             string searchWord = "";
 
-            foreach (string word in stringValidator)
+            for (int i = 0; i < stringValidator.Length; i++)
             {
-                searchWord = word;
+                searchWord = stringValidator[i];
 
                 if ((searchWord != "") && (searchWord[0] == '\"'))
                 {
                     hasQuotationMarks = true;
                     quotationString = searchWord;
+                    if (i == stringValidator.Length - 1)
+                    {
+                        if (stringValidator.Length > 1)
+                        {
+                            if ((searchStringHandlerList[searchStringHandlerList.Count - 1] != "and") && (searchStringHandlerList[searchStringHandlerList.Count - 1] != "or"))
+                            {
+                                searchStringHandlerList.Add("and");
+                                searchStringHandlerList.Add(quotationString);
+                            }
+                            else
+                            {
+                                searchStringHandlerList.Add(quotationString);
+                            }
+                        }
+                        else
+                        {
+                            searchStringHandlerList.Add("and");
+                            searchStringHandlerList.Add(quotationString);
+                        }
+                    }
                     continue;
                 }
                 else if (hasQuotationMarks)
@@ -222,10 +242,14 @@ namespace SearchStringHandler
                 {
                     if (hasQuotationMarks)
                     {
-                        if (stringValidator.Count() == 1)
+                        if (i == stringValidator.Length - 1)
                         {
-                            searchStringHandlerList.Add("and");
+                            if (searchStringHandlerList.Count == 0)
+                            {
+                                searchStringHandlerList.Add("and");
+                            }
                         }
+
                         searchStringHandlerList.Add(quotationString);
                         hasQuotationMarks = false;
                         quotationString = "";
@@ -306,7 +330,7 @@ namespace SearchStringHandler
 
             int index = 0;
 
-            // Metodo que retorna 
+            //TODO:  Implement in the next version.
             /* while (index != -1)
             {
                 index = normalizedText.IndexOf(teste, index + teste.Length);
@@ -462,25 +486,12 @@ namespace SearchStringHandler
                     process.CloseMainWindow();
                     process.Close();
                 }
-
-                /* if (!process.HasExited)
-                { } */
-
-                /* async Task ProcessDelay()
-                {
-                    await Task.Delay(1000);
-                } */
-
-                /* if (!process.HasExited)
-                { */
-
-                //}
-
             }
 
             try
             {
-                Thread.Sleep(3000);
+                // TODO: Review this part for the next version.
+                Thread.Sleep(5000);
 
                 // Handles writing in the .txt file.
                 File.AppendAllText($@"{directoryPath}\generatedReport.txt", report.ToString());
@@ -752,9 +763,6 @@ namespace SearchStringHandler
 
             }
 
-            Console.WriteLine("\ncondition --> " + condition);
-            Console.WriteLine("\noperators --> " + operators);
-
             return expressionValidatorTuple;
         }
         #endregion
@@ -765,8 +773,6 @@ namespace SearchStringHandler
         */
         private static bool ValidateExpression(string expression, string normalizedText, bool isAnd = false, bool isOr = false)
         {
-
-            Console.WriteLine("\n" + normalizedText);
 
             bool isValidExpression = true;
             string[] splittedExpression = null;

@@ -14,7 +14,8 @@ namespace SearchStringHandler
         public static void Main(string[] args)
         {
             //* Variables that are used in the menu and in the ExecuteProgram function.
-            string searchStringInput = "texto";
+            //string searchStringInput = "Mineração and Texto";
+            string searchStringInput = "";
             int countQuery = 1;
             string option = "";
             string fileName = "";
@@ -31,7 +32,7 @@ namespace SearchStringHandler
 
             //-------------------------------- SHOW MENU ------------------------------------
 
-            /* do
+            do
             {
                 ShowMenu();
 
@@ -107,162 +108,162 @@ namespace SearchStringHandler
                                 choosenFile = "";
                             }
                         }
-                    } while (choosenFile == ""); */
+                    } while (choosenFile == "");
 
-            //* ---------------------------- SEARCH STRING VALIDATION -----------------------------------
+                    //* ---------------------------- SEARCH STRING VALIDATION -----------------------------------
 
-            string cleanedSearchStrings = SearchStringUtils.NormalizeAndCleanText(searchStringInput);
+                    string cleanedSearchStrings = SearchStringUtils.NormalizeAndCleanText(searchStringInput);
 
-            try
-            {
-                SearchStringUtils.ValidateStringExceptions(cleanedSearchStrings);
-            }
-            catch (System.Exception exception)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.Error.WriteLine("\n" + exception.ToString());
-                Console.ForegroundColor = ConsoleColor.White;
-                // TODO: Handle in a better way in the next version.
-                Environment.Exit(0);
-                // if (++countTentatives == maxTries) throw exception; //! Will be used in the next version of the code.
-            }
+                    try
+                    {
+                        SearchStringUtils.ValidateStringExceptions(cleanedSearchStrings);
+                    }
+                    catch (System.Exception exception)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.Error.WriteLine("\n" + exception.ToString());
+                        Console.ForegroundColor = ConsoleColor.White;
+                        // TODO: Handle in a better way in the next version.
+                        Environment.Exit(0);
+                        // if (++countTentatives == maxTries) throw exception; //! Will be used in the next version of the code.
+                    }
 
-            //* --------------------------------- EXECUTE PROGRAM ----------------------------------------
+                    //* --------------------------------- EXECUTE PROGRAM ----------------------------------------
 
-            ExecuteProgram(searchStringInput: searchStringInput, cleanedSearchStrings: cleanedSearchStrings, fileDirectory: fileDirectory, fileName: fileName, countQuery: countQuery);
-            countQuery++;
+                    ExecuteProgram(searchStringInput: searchStringInput, cleanedSearchStrings: cleanedSearchStrings, fileDirectory: fileDirectory, fileName: fileName, countQuery: countQuery);
+                    countQuery++;
 
-            //* ------------------------------ OPEN GENERATED REPORT -------------------------------------
+                    //* ------------------------------ OPEN GENERATED REPORT -------------------------------------
 
-            Process process = new Process();
-            process.StartInfo = new ProcessStartInfo($@"{Directory.GetCurrentDirectory()}\generatedReport\generatedReport.pdf")
-            {
-                UseShellExecute = true
-            };
-            process.Start();
-        }
+                    Process process = new Process();
+                    process.StartInfo = new ProcessStartInfo($@"{Directory.GetCurrentDirectory()}\generatedReport\generatedReport.pdf")
+                    {
+                        UseShellExecute = true
+                    };
+                    process.Start();
+                }
 
-        // TODO: Implement the .txt file reader {TestSearchStrings()} function that validades all search strings inside a test file.
-        // TODO: Validate if the .txt is not empty.
-        /*  else if (option == "3")
-         {
-             do
-             {
-                 Console.Write("\n♦ Input a directory name inside CurrentDirectory() that contains ypur TXT file (or use \"txtbusca\" as default): ");
-                 Console.Write("\n♦ The current path is: ");
-                 Console.Write(Directory.GetCurrentDirectory());
-                 fileDirectory = Console.ReadLine();
-                 fileDirectoryValidation = Directory.GetCurrentDirectory() + fileDirectory;
-                 if (Directory.Exists(fileDirectoryValidation) is false)
+                // TODO: Implement the .txt file reader {TestSearchStrings()} function that validades all search strings inside a test file.
+                // TODO: Validate if the .txt is not empty.
+                /*  else if (option == "3")
                  {
-                     Console.ForegroundColor = ConsoleColor.Red;
-                     Console.Write("\n♦ Directory doesn't exists, write a valid directory!!\n");
-                     Console.ForegroundColor = ConsoleColor.White;
-                 }
-             } while (Directory.Exists(fileDirectoryValidation) is false);
-
-             do
-             {
-                 Console.WriteLine("Input the name of your TXT file: ");
-                 chooseTxtFile = Console.ReadLine();
-                 if (File.Exists(chooseTxtFile) is false)
-                 {
-
-                     Console.ForegroundColor = ConsoleColor.Red;
-                     Console.Write("\n♦ This directory doesn't contain this file, please choose a valid option below\n");
-                     Console.ForegroundColor = ConsoleColor.White;
-                     string[] arquivos = Directory.GetFiles(fileDirectoryValidation);
-                     int cont = 0;
-                     Console.WriteLine("Arquivos: ");
-                     foreach (string arq in arquivos)
+                     do
                      {
-                         Console.Write("Opção: " + cont + ": ");
-                         int fileNameIndex = arq.LastIndexOf(@"\") + 1;
-                         string fileNames = arq.Substring(fileNameIndex, (arq.Length - fileNameIndex));
-                         Console.WriteLine(fileNames);
-                         cont++;
-                     }
+                         Console.Write("\n♦ Input a directory name inside CurrentDirectory() that contains ypur TXT file (or use \"txtbusca\" as default): ");
+                         Console.Write("\n♦ The current path is: ");
+                         Console.Write(Directory.GetCurrentDirectory());
+                         fileDirectory = Console.ReadLine();
+                         fileDirectoryValidation = Directory.GetCurrentDirectory() + fileDirectory;
+                         if (Directory.Exists(fileDirectoryValidation) is false)
+                         {
+                             Console.ForegroundColor = ConsoleColor.Red;
+                             Console.Write("\n♦ Directory doesn't exists, write a valid directory!!\n");
+                             Console.ForegroundColor = ConsoleColor.White;
+                         }
+                     } while (Directory.Exists(fileDirectoryValidation) is false);
 
-                     Console.WriteLine("Digite o número da opção desejada: ");
-                     choosenOption = Convert.ToInt16(Console.ReadLine());
-                     if (choosenOption >= 0 && choosenOption < arquivos.Length)
+                     do
                      {
-                         int fileNameIndex = arquivos[choosenOption].LastIndexOf(@"\") + 1;
-                         chooseTxtFile = arquivos[choosenOption].Substring(fileNameIndex, (arquivos[choosenOption].Length - fileNameIndex));
-                         Console.WriteLine("Arquivo selecionardo: " + chooseTxtFile);
-                     }
-                     else
+                         Console.WriteLine("Input the name of your TXT file: ");
+                         chooseTxtFile = Console.ReadLine();
+                         if (File.Exists(chooseTxtFile) is false)
+                         {
+
+                             Console.ForegroundColor = ConsoleColor.Red;
+                             Console.Write("\n♦ This directory doesn't contain this file, please choose a valid option below\n");
+                             Console.ForegroundColor = ConsoleColor.White;
+                             string[] arquivos = Directory.GetFiles(fileDirectoryValidation);
+                             int cont = 0;
+                             Console.WriteLine("Arquivos: ");
+                             foreach (string arq in arquivos)
+                             {
+                                 Console.Write("Opção: " + cont + ": ");
+                                 int fileNameIndex = arq.LastIndexOf(@"\") + 1;
+                                 string fileNames = arq.Substring(fileNameIndex, (arq.Length - fileNameIndex));
+                                 Console.WriteLine(fileNames);
+                                 cont++;
+                             }
+
+                             Console.WriteLine("Digite o número da opção desejada: ");
+                             choosenOption = Convert.ToInt16(Console.ReadLine());
+                             if (choosenOption >= 0 && choosenOption < arquivos.Length)
+                             {
+                                 int fileNameIndex = arquivos[choosenOption].LastIndexOf(@"\") + 1;
+                                 chooseTxtFile = arquivos[choosenOption].Substring(fileNameIndex, (arquivos[choosenOption].Length - fileNameIndex));
+                                 Console.WriteLine("Arquivo selecionardo: " + chooseTxtFile);
+                             }
+                             else
+                             {
+                                 chooseTxtFile = "";
+                             }
+                         }
+                     } while (chooseTxtFile == "");
+
+
+                     do
                      {
-                         chooseTxtFile = "";
-                     }
-                 }
-             } while (chooseTxtFile == "");
+                         Console.Write("\n♦ Input a directory name inside CurrentDirectory() that contains PDF files (or use \"pdfs\" as default): ");
+                         Console.Write("\n♦ The current path is: ");
+                         Console.Write(Directory.GetCurrentDirectory());
+                         fileDirectory = Console.ReadLine();
+                         fileDirectoryValidation = Directory.GetCurrentDirectory() + fileDirectory;
+                         if (Directory.Exists(fileDirectoryValidation) is false)
+                         {
+                             Console.ForegroundColor = ConsoleColor.Red;
+                             Console.Write("\n♦ Directory doesn't exists, write a valid directory!!\n");
+                             Console.ForegroundColor = ConsoleColor.White;
+                         }
+                     } while (Directory.Exists(fileDirectoryValidation) is false);
 
 
-             do
-             {
-                 Console.Write("\n♦ Input a directory name inside CurrentDirectory() that contains PDF files (or use \"pdfs\" as default): ");
-                 Console.Write("\n♦ The current path is: ");
-                 Console.Write(Directory.GetCurrentDirectory());
-                 fileDirectory = Console.ReadLine();
-                 fileDirectoryValidation = Directory.GetCurrentDirectory() + fileDirectory;
-                 if (Directory.Exists(fileDirectoryValidation) is false)
-                 {
-                     Console.ForegroundColor = ConsoleColor.Red;
-                     Console.Write("\n♦ Directory doesn't exists, write a valid directory!!\n");
-                     Console.ForegroundColor = ConsoleColor.White;
-                 }
-             } while (Directory.Exists(fileDirectoryValidation) is false);
-
-
-             do
-             {
-                 Console.WriteLine("Input the name of your file: ");
-                 choosenFile = Console.ReadLine();
-                 if (File.Exists(choosenFile) is false)
-                 {
-
-                     Console.ForegroundColor = ConsoleColor.Red;
-                     Console.Write("\n♦ This directory doesn't contain this file, please choose a valid option below\n");
-                     Console.ForegroundColor = ConsoleColor.White;
-                     string[] arquivos = Directory.GetFiles(fileDirectoryValidation);
-                     int cont = 0;
-                     Console.WriteLine("Arquivos: ");
-                     foreach (string arq in arquivos)
+                     do
                      {
-                         Console.Write("Opção: " + cont + ": ");
-                         int fileNameIndex = arq.LastIndexOf(@"\") + 1;
-                         string fileNames = arq.Substring(fileNameIndex, (arq.Length - fileNameIndex));
-                         Console.WriteLine(fileNames);
-                         cont++;
-                     }
+                         Console.WriteLine("Input the name of your file: ");
+                         choosenFile = Console.ReadLine();
+                         if (File.Exists(choosenFile) is false)
+                         {
 
-                     Console.WriteLine("Digite o número da opção desejada: ");
-                     choosenOption = Convert.ToInt16(Console.ReadLine());
-                     if (choosenOption >= 0 && choosenOption < arquivos.Length)
-                     {
-                         int fileNameIndex = arquivos[choosenOption].LastIndexOf(@"\") + 1;
-                         choosenFile = arquivos[choosenOption].Substring(fileNameIndex, (arquivos[choosenOption].Length - fileNameIndex));
-                         Console.WriteLine("Arquivo selecionardo: " + choosenFile);
-                     }
-                     else
-                     {
-                         choosenFile = "";
-                     }
-                 }
-             } while (choosenFile == "");
-         } */
+                             Console.ForegroundColor = ConsoleColor.Red;
+                             Console.Write("\n♦ This directory doesn't contain this file, please choose a valid option below\n");
+                             Console.ForegroundColor = ConsoleColor.White;
+                             string[] arquivos = Directory.GetFiles(fileDirectoryValidation);
+                             int cont = 0;
+                             Console.WriteLine("Arquivos: ");
+                             foreach (string arq in arquivos)
+                             {
+                                 Console.Write("Opção: " + cont + ": ");
+                                 int fileNameIndex = arq.LastIndexOf(@"\") + 1;
+                                 string fileNames = arq.Substring(fileNameIndex, (arq.Length - fileNameIndex));
+                                 Console.WriteLine(fileNames);
+                                 cont++;
+                             }
 
-        /* else
-        {
+                             Console.WriteLine("Digite o número da opção desejada: ");
+                             choosenOption = Convert.ToInt16(Console.ReadLine());
+                             if (choosenOption >= 0 && choosenOption < arquivos.Length)
+                             {
+                                 int fileNameIndex = arquivos[choosenOption].LastIndexOf(@"\") + 1;
+                                 choosenFile = arquivos[choosenOption].Substring(fileNameIndex, (arquivos[choosenOption].Length - fileNameIndex));
+                                 Console.WriteLine("Arquivo selecionardo: " + choosenFile);
+                             }
+                             else
+                             {
+                                 choosenFile = "";
+                             }
+                         }
+                     } while (choosenFile == "");
+                 } */
+
+                else
+                {
+                    Console.Clear();
+                }
+
+            } while (option != "5");
+
             Console.Clear();
         }
 
-    } while (option != "5");
-
-    Console.Clear(); 
-
-}*/
 
         #region ShowMenu
         /*
