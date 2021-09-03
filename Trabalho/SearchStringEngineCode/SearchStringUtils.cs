@@ -370,7 +370,7 @@ namespace SearchStringHandler
 
             var occurrences = new StringBuilder();
 
-            report.AppendLine("*****************************************");
+            report.AppendLine("\n\n*****************************************");
             report.AppendLine($"Número da consulta: {countQuery}");
             report.AppendLine($"Nome do documento: {fileName}");
             report.AppendLine($"String de busca: {searchString}");
@@ -393,7 +393,7 @@ namespace SearchStringHandler
 
             string directoryPath = $@"{Directory.GetCurrentDirectory()}\generatedReport";
 
-            File.WriteAllText($@"{directoryPath}\generatedReport.txt", report.ToString());
+            File.AppendAllText($@"{directoryPath}\generatedReport.txt", report.ToString());
 
             StreamReader txtReport = new StreamReader($@"{directoryPath}\generatedReport.txt");
 
@@ -408,13 +408,6 @@ namespace SearchStringHandler
             pdfReport.Close();
 
             Console.WriteLine("\n" + report);
-
-            Process process = new Process();
-            process.StartInfo = new ProcessStartInfo($@"{directoryPath}\generatedReport.pdf")
-            {
-                UseShellExecute = true
-            };
-            process.Start();
         }
         #endregion
         #region PrintOutputs
