@@ -64,9 +64,9 @@ Validate the expression:
     
     bool  ValidateExpression(expression: string,normalizedText: string,isAnd: bool,isOr: bool)
     
-Counting words:
+Validation of AND:
 
-    Dictionary<string, int> CountWords()
+    bool AddAndValidation(searchStringHandlerList: List<string>,searchWord: string,hasQuotationMarks: bool)
 
    ## Runtime Method
 Used to build the menu: 
