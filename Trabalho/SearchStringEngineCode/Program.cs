@@ -353,5 +353,4 @@ namespace SearchStringHandler
         }
         #endregion
     }
-    // TODO: Test "and" and "or" with quotation and validate if is working.
 }

@@ -322,15 +322,15 @@ namespace SearchStringHandler
 
             string normalizedText = NormalizeAndCleanText(pdfText);
 
-            int searchCount = 0;
+            //int searchCount = 0; //! Will be used in the next version of the code.
 
-            string teste = "desenvolvimento de aplicacoes";
+            //string teste = "desenvolvimento de aplicacoes"; //! Will be used in the next version of the code.
 
             List<int> listTest = new List<int>();
 
-            int index = 0;
+            //int index = 0; //! Will be used in the next version of the code.
 
-            //TODO:  Implement in the next version.
+            //TODO: Implement in the next version.
             /* while (index != -1)
             {
                 index = normalizedText.IndexOf(teste, index + teste.Length);
@@ -867,6 +867,7 @@ namespace SearchStringHandler
     }
     // TODO: List of TODOs of the project that will be implemented in a not so distant future...
     // TODO: Implement the option '2' of the menu that will load the search strings from a .txt file (TestSearchStrings function).
+    // TODO: Create the validation of compound strings.
     // TODO: Add better commentaries to ensure the documentation quality.
     // TODO: Implement a Split function that keeps the separator. 
     // TODO: Try to SeparateExpressions without using Regex.
