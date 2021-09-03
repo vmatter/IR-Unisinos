@@ -26,7 +26,7 @@ Method used to receive the PDF folder and file:
     string  TestSearchStrings(fileDirectory: string , fileName: string)
 Method developed to read the PDF text: 
     
-    string ReadTextInPdf(fileDirectory: string,fileName: string)
+    string ReadTextFromPdf(fileDirectory: string,fileName: string)
     
 Method used to normalize text: 
 
@@ -42,11 +42,11 @@ String Tokenization:
     
 Used to separate the expression and assemble the search string into a list: 
 
-    List<List<string>> SeparateExpressions(searchStringTokens: List<string>)
+    List<List<string>> SeparateExpressionsFromParentheses(searchStringTokens: List<string>)
    
 Method for creating a dictionary to store the String: 
     
-    Dictionary<string, int> FindExpressionsInPdf(searchStringTokens: List<List<string>>,filePath: string)
+    Dictionary<string, int> CountSearchTokensInPdf(searchStringTokens: List<List<string>>,filePath: string)
     
 It will generate the report in the txt file: 
 
