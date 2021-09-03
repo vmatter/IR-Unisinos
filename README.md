@@ -78,7 +78,6 @@ Used to build the menu:
 	Option 3: Search using TXT. File -> Used to reference the location of a TXT file with search strings.
 	Option 5: Exit -> Used to terminate the program. 
 
-
 **Option 1**:
 
  - Request the search string;;
@@ -100,15 +99,16 @@ Used to build the menu:
 
  - Ends program execution; 
 
-# Próximos passos
+# Next steps
 
- - TO DO: Implement the option '2' of the menu that will load the search strings from a .txt file (TestSearchStrings function).
- - TO DO: Add better commentaries to ensure the documentation quality.
- - TO DO: Implement a Split function that keeps the separator. 
- - TO DO: Try to SeparateExpressions without using Regex.
- - TO DO: Verify if C# has an implementation of FileSeparator like Java.
- - TO DO: Change the dictionary to an OrderedDictionary.
- - TO DO: Rework the VerifyExpressions using a BinaryTree.
- - TO DO: Review all the code after Marcio`s reivions.
- - TO DO: Validate if all files and directories exists else create them.
+ - TODO: Implement the option '2' of the menu that will load the search strings from a .txt file (TestSearchStrings function).
+ - TODO: Create the validation of compound strings.
+ - TODO: Add better commentaries to ensure the documentation quality.
+ - TODO: Implement a Split function that keeps the separator. 
+ - TODO: Try to SeparateExpressions without using Regex.
+ - TODO: Verify if C# has an implementation of FileSeparator like Java.
+ - TODO: Change the dictionary to an OrderedDictionary.
+ - TODO: Rework the VerifyExpressions using a BinaryTree.
+ - TODO: Review all the code after Marcio`s reivions.
+ - TODO: Validate if all files and directories exists else create them.
 
