@@ -1,101 +1,114 @@
-# Busca por String em documentos
+# Search in documents by Strings
 
-# Contribuidores
+# Contributors
 | <img src="https://avatars.githubusercontent.com/u/22084856?v=4" width=150px height=150px><br> [Paulo Backes](https://github.com/JrBackes)| <img src="https://avatars1.githubusercontent.com/u/43481916?s=400&u=2683d479631afcd710a45ec6cae3e82ba1a846bf&v=4" width=150px height=150px><br> [Vitor Matter](https://github.com/vmatter) |
 |---|---|
 
-# Dados da aplicação
-Projeto tem como premissa, utilizar uma String de busca informada pelo usuário, para buscar as palavras em um arquivo em formato PDF.
+# Application data
+The project's premise is to use a search String informed by the user, to find the words in a file in PDF format.
 
-# Regras do negócio
-- As palavras que deverão ser localizadas no texto serão informadas em letras minúsculas.
-- No caso de múltiplas palavras deverá ser informado o operador lógico entre elas. Os operadores lógicos aceitos serão **AND** e **OR**.
-- Os operadores deverão ser escritos em letras maiúsculas, enquanto as palavras consultadas em letras minúsculas.
-- A aplicação deverá retornar os seguintes resultados, com base na consulta realizada.
-- Caso o operador OR seja utilizado, a aplicação deverá retornar o número de ocorrências de cada uma das palavras consultadas.
-- Caso o operador AND seja utilizado, a aplicação deverá retornar se as duas palavras foram encontradas no texto, juntamente com o número de ocorrências de cada uma delas. 
-É importante frisar que a as palavras poderão constar no documento em mais de um formato. Por exemplo, a palavra aplicação pode constar também como Aplicação, APLICAÇÃO, aplicacao, etc.
+# Business rules
+- The words that are located in the text will be informed in lowercase.
+- In the case of multiple words, the logical operator between them must be informed. The accepted logical operators will be **AND** and **OR**.
+- Operators must be written in capital letters, while the words consulted in small letters.
 
-# Métodos
+The application should return the following results, based on the query performed.
+- If OR operator is used, the application must return the number of occurrences of each of the queried words.
+- If AND operator is used, the application must return if the two words were found in the text, together with the number of occurrences of each one of them.
+It is important to note that the words may appear in the document in more than one format. For example, the word aplicação can also appear as Aplicação, APLICAÇÃO, aplicacao, etc. 
 
-## Métodos usados internamente
+# Methods
 
-Método utilizado para receber a pasta e arquivo PDF:
+## Methods used for validation
+
+Method used to receive the PDF folder and file: 
 
     string  TestSearchStrings(fileDirectory: string , fileName: string)
-Método desenvolvido para ler o texto do PDF:
+Method developed to read the PDF text: 
     
     string ReadTextInPdf(fileDirectory: string,fileName: string)
     
-Método usado para fazer a normalização do texto:
+Method used to normalize text: 
 
     string NormalizeAndCleanText(textString: string)
     
-Método responsável por fazer as validações da String:
+Method responsible for performing String validations: 
 
     bool  ValidateStringExceptions(searchStringCleaned: string)
     
-Tokenização da String
+String Tokenization:
 
     List<string> TokenizeSearchString(searchStringCleaned: string)
     
-Utlizado para separar a expressão e montar a String de busca em lista:
+Used to separate the expression and assemble the search string into a list: 
 
     List<List<string>> SeparateExpressions(searchStringTokens: List<string>)
    
-Método para criação de um dicionário para armazenamento da String:
+Method for creating a dictionary to store the String: 
     
     Dictionary<string, int> FindExpressionsInPdf(searchStringTokens: List<List<string>>,filePath: string)
     
-Fará a geração do relatório no arquivo txt: 
+It will generate the report in the txt file: 
 
     void  GenerateReport(contQuery: int, filePath: string,  searchString: string,searchTokensdictionary: Dictionary<string, int>)
     
-Imprime as saídas na tela
+Show outputs to screen:
 
     void  PrintOutputs<T>(outputName: string,outputPrimitive: string,outputList: List<T>,outputListOfLists: List<List<T>>)
     
-Reponsável pela verificação da expressão:
+This one verify the expression:
 
     List<Tuple<string, string>> VerifyExpressions(searchStringTokens: List<List<string>>,   normalizedText: string)
     
-Utilizado para validar a expressão:
+Validate the expression:
     
     bool  ValidateExpression(expression: string,normalizedText: string,isAnd: bool,isOr: bool)
     
-Utilizado para contar as palavras:
+Counting words:
 
     Dictionary<string, int> CountWords()
 
-   ## Método usado em tempo de execução
-Utilizado para montar o menu:
+   ## Runtime Method
+Used to build the menu: 
     void  ShowMenu()
     
-    Opções do Menu:
+    Menu Options:
 
-	Opção 1: Manual Search -> Utilizada para digitar uma string no software.
-	Opção 3: Search using TXT. File -> Utilizada para referenciar o local de um arquivo TXT com as strings de busca.
-	Opção 5: Exit -> Utilizado para encerrar o programa.
+	Option 1: Manual Search -> Used to type a string into the software .
+	Option 3: Search using TXT. File -> Used to reference the location of a TXT file with search strings.
+	Option 5: Exit -> Used to terminate the program. 
 
 
-**Opção 1**:
+**Option 1**:
 
- - Solicita a String de busca;
- - Executa a validação do diretório;
- - Executa a validação e verifica se o arquivo PDF informado existe;
- - Gera o relatório;
- - Apresenta para o usuário o resultado da busca;
+ - Request the search string;;
+ - Perform directory validation;
+ - Performs validation and checks if the PDF file entered exists;
+ - Generates the report;
+ - Shows the search result to the user; 
 
-**Opção 3** :
+**Option 3** :
 
- - Executa a validação do diretório do TXT de busca;
- - Executa a validação e verifica se o arquivo TXT informado existe;
- - Executa a validação do diretório;
- - Executa a validação e verifica se o arquivo PDF informado existe;
- - Gera o relatório;
- - Apresenta para o usuário o resultado da busca;
+ - Performs the validation of the search TXT directory;
+ - Executes the validation if the TXT file informed exists;
+ - Perform directory validation;
+ - Performs validation and checks if the PDF file entered exists;
+ - Generates a report;
+ - Print the search result to the user; 
 
-**Opção 5** :
+**Option 5** :
 
- - Finaliza a execução do programa;
+ - Ends program execution; 
+
+# Próximos passos
+
+ - TO DO: Implement the option '2' of the menu that will load the search strings from a .txt file (TestSearchStrings function).
+ - TO DO: Add better commentaries to ensure the documentation quality.
+ - TO DO: Implement a Split function that keeps the separator. 
+ - TO DO: Try to SeparateExpressions without using Regex.
+ - TO DO: Verify if C# has an implementation of FileSeparator like Java.
+ - TO DO: Change the dictionary to an OrderedDictionary.
+ - TO DO: Rework the VerifyExpressions using a BinaryTree.
+ - TO DO: Review all the code after Marcio`s reivions.
+ - TO DO: Validate if all files and directories exists else create them.
 
