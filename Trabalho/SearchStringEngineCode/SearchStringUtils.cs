@@ -460,6 +460,8 @@ namespace SearchStringHandler
             {
                 StringBuilder dictionaryOutput = new StringBuilder();
 
+                //TODO: Discover why the Dictionary<string, int> cannot be T --> Generic.
+
                 string lastDictionaryKey = outputDictionary.Keys.Last().ToString();
 
                 foreach (var token in outputDictionary)
@@ -692,7 +694,7 @@ namespace SearchStringHandler
         }
         #endregion
     }
-    // TODO: List of TODOs of the project that will be implemented in a not so distant future.
+    // TODO: List of TODOs of the project that will be implemented in a not so distant future...
     // TODO: Implement the option '2' of the menu that will load the search strings from a .txt file (TestSearchStrings function).
     // TODO: Add better commentaries to ensure the documentation quality.
     // TODO: Implement a Split function that keeps the separator. 
