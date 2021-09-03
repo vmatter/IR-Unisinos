@@ -1,0 +1,23 @@
+(texto and info) or (a and b)
+(texto and info)(a and b)
+(texto and info) (a and b)
+"info"
+desenvolvimento or teste or coragem or verificar
+Desenvolvimento or aplicação
+"Desenvolvimento de Aplicações\" AND \"Mineração de Texto"
+desenvolvimento or teste or coragem and verificar
+teste and (promoção or testando)
+teste and (olhando
+teste and olhando)
+teste andolhando
+teste and(verificação de linguagens)
+teste and ((mand de) linguagens)
+and teste or verificação
+verificando and teste @
+(olhando and observando) or verificação -
+a and b or c and d or e
+desenvolvimento AND aplicação
+("texto info" banana and opcao)
+"("texto info" banana and opcao)"
+"teste"
+@@#((\"Classificação''' :::;';'';'~~de ;'';'~~Texto\"!@#$%$%@ OR##@! !@#!@#Classificação ;'';'~~de ;'';'~~Informação);'';'~~ AND PLN)
