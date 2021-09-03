@@ -14,7 +14,7 @@ namespace SearchStringHandler
         public static void Main(string[] args)
         {
             //* Variables that are used in the menu and in the ExecuteProgram function.
-            string searchStringInput = "banana or Mineração";
+            string searchStringInput = "texto";
             int countQuery = 1;
             string option = "";
             string fileName = "";
@@ -347,7 +347,7 @@ namespace SearchStringHandler
             SearchStringUtils.PrintOutputs<Dictionary<string, int>>(outputName: "countedTokensInPdf", outputDictionary: countedTokensInPdf);
 
             //* Generates a report with the search string results and prints them.
-            string report = SearchStringUtils.GenerateReport(countQuery: countQuery, fileName: fileName, searchString: searchStringInput, countedTokensInPdf);
+            string report = SearchStringUtils.GenerateReport(countQuery: countQuery, fileName: fileName, searchStringInput: searchStringInput, countedTokensInPdf);
             Console.WriteLine("\n" + report);
         }
         #endregion

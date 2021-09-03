@@ -8,6 +8,11 @@ using iTextSharp.text.pdf;
 using iTextSharp.text.pdf.parser;
 using System.Text.RegularExpressions;
 using iTextSharp.text;
+using System.Diagnostics;
+using System.Timers;
+using System.Runtime;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace SearchStringHandler
 {
@@ -208,7 +213,7 @@ namespace SearchStringHandler
                     }
                 }
 
-                if (AddAndValidation(searchStringHandlerList, searchWord, hasQuotationMarks))
+                if (AddAndValidation(stringValidator, searchStringHandlerList, searchWord, hasQuotationMarks))
                 {
                     searchStringHandlerList.Add("and");
                     searchStringHandlerList.Add(searchWord);
@@ -413,7 +418,7 @@ namespace SearchStringHandler
         /*
         * Function that generates the report containing the general results of the string search.
         */
-        public static string GenerateReport(int countQuery, string fileName, string searchString, Dictionary<string, int> searchTokensInDictionary)
+        public static string GenerateReport(int countQuery, string fileName, string searchStringInput, Dictionary<string, int> countedTokensInPdf)
         {
             StringBuilder report = new StringBuilder();
 
@@ -422,12 +427,12 @@ namespace SearchStringHandler
             report.AppendLine("\n\n*****************************************");
             report.AppendLine($"Número da consulta: {countQuery}");
             report.AppendLine($"Nome do documento: {fileName}");
-            report.AppendLine($"String de busca: {searchString}");
+            report.AppendLine($"String de busca: {searchStringInput}");
             report.AppendLine($"String de busca é válida: {isValidCondition}");
 
-            var lastToken = searchTokensInDictionary.Last();
+            var lastToken = countedTokensInPdf.Last();
 
-            foreach (var token in searchTokensInDictionary)
+            foreach (var token in countedTokensInPdf)
             {
                 if (!token.Equals(lastToken))
                 {
@@ -444,16 +449,54 @@ namespace SearchStringHandler
 
             string directoryPath = $@"{Directory.GetCurrentDirectory()}\generatedReport";
 
-            // Handles writing in the .txt file.
-            File.AppendAllText($@"{directoryPath}\generatedReport.txt", report.ToString());
+            Process[] runningProcesses = Process.GetProcesses();
 
-            // Handles writing in the .pdf file.
-            StreamReader txtReport = new StreamReader($@"{directoryPath}\generatedReport.txt");
-            Document pdfReport = new Document();
-            PdfWriter.GetInstance(pdfReport, new FileStream($@"{directoryPath}\generatedReport.pdf", FileMode.Create));
-            pdfReport.Open();
-            pdfReport.Add(new Paragraph(txtReport.ReadToEnd()));
-            pdfReport.Close();
+            Process processRunning = new Process();
+
+            foreach (Process process in runningProcesses)
+            {
+                // now check the modules of the process
+
+                if (process.MainWindowTitle.Contains("generatedReport"))
+                {
+                    process.CloseMainWindow();
+                    process.Close();
+                }
+
+                /* if (!process.HasExited)
+                { } */
+
+                /* async Task ProcessDelay()
+                {
+                    await Task.Delay(1000);
+                } */
+
+                /* if (!process.HasExited)
+                { */
+
+                //}
+
+            }
+
+            try
+            {
+                Thread.Sleep(3000);
+
+                // Handles writing in the .txt file.
+                File.AppendAllText($@"{directoryPath}\generatedReport.txt", report.ToString());
+                // Handles writing in the .pdf file.
+                StreamReader txtReport = new StreamReader($@"{directoryPath}\generatedReport.txt");
+                Document pdfReport = new Document();
+                PdfWriter.GetInstance(pdfReport, new FileStream($@"{directoryPath}\generatedReport.pdf", FileMode.Create));
+                pdfReport.Open();
+                pdfReport.Add(new Paragraph(txtReport.ReadToEnd()));
+                pdfReport.Close();
+
+            }
+            catch (IOException)
+            {
+                Console.WriteLine("Error");
+            }
 
             return report.ToString();
         }
@@ -684,7 +727,7 @@ namespace SearchStringHandler
                     isValidCondition = "True";
                 }
             }
-            else
+            else if (operators.Contains("and"))
             {
                 if (condition.Contains("True"))
                 {
@@ -695,6 +738,22 @@ namespace SearchStringHandler
                     isValidCondition = "False";
                 }
             }
+            else
+            {
+                Console.WriteLine("\n" + condition);
+                if (condition.Contains("True"))
+                {
+                    isValidCondition = "True";
+                }
+                else
+                {
+                    isValidCondition = "False";
+                }
+
+            }
+
+            Console.WriteLine("\ncondition --> " + condition);
+            Console.WriteLine("\noperators --> " + operators);
 
             return expressionValidatorTuple;
         }
@@ -706,6 +765,9 @@ namespace SearchStringHandler
         */
         private static bool ValidateExpression(string expression, string normalizedText, bool isAnd = false, bool isOr = false)
         {
+
+            Console.WriteLine("\n" + normalizedText);
+
             bool isValidExpression = true;
             string[] splittedExpression = null;
             int countWordForOr = 0;
@@ -759,10 +821,16 @@ namespace SearchStringHandler
         /*
          * Function that contains all validations to add "and" to words that does not contain an operator.
         */
-        private static bool AddAndValidation(List<string> searchStringHandlerList, string searchWord, bool hasQuotationMarks)
+        private static bool AddAndValidation(string[] stringValidator, List<string> searchStringHandlerList, string searchWord, bool hasQuotationMarks)
         {
 
             bool shouldAddAnd = true;
+
+            // TODO: Validate this condition.
+            if (stringValidator.Contains("and") || stringValidator.Contains("or"))
+            {
+                return false;
+            }
 
             if ((searchWord == "and" || searchWord == "or") || (searchWord == "(" || searchWord == ")"))
             {
