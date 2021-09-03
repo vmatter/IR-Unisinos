@@ -18,11 +18,54 @@ Projeto tem como premissa, utilizar uma String de busca informada pelo usuário,
 
 # Métodos
 
-## Create files and folders
+## Métodos usados internamente
+
+Método utilizado para receber a pasta e arquivo PDF:
 
     string  TestSearchStrings(fileDirectory: string , fileName: string)
+Método desenvolvido para ler o texto do PDF:
     
     string ReadTextInPdf(fileDirectory: string,fileName: string)
+    
+Método usado para fazer a normalização do texto:
+
+    string NormalizeAndCleanText(textString: string)
+    
+Método responsável por fazer as validações da String:
+
+    bool  ValidateStringExceptions(searchStringCleaned: string)
+    
+Tokenização da String
+
+    List<string> TokenizeSearchString(searchStringCleaned: string)
+    
+Utlizado para separar a expressão e montar a String de busca em lista:
+
+    List<List<string>> SeparateExpressions(searchStringTokens: List<string>)
+   
+Método para criação de um dicionário para armazenamento da String:
+    
+    Dictionary<string, int> FindExpressionsInPdf(searchStringTokens: List<List<string>>,filePath: string)
+    
+Fará a geração do relatório no arquivo txt: 
+
+    void  GenerateReport(contQuery: int, filePath: string,  searchString: string,searchTokensdictionary: Dictionary<string, int>)
+    
+Imprime as saídas na tela
+
+    void  PrintOutputs<T>(outputName: string,outputPrimitive: string,outputList: List<T>,outputListOfLists: List<List<T>>)
+    
+Reponsável pela verificação da expressão:
+
+    List<Tuple<string, string>> VerifyExpressions(searchStringTokens: List<List<string>>,   normalizedText: string)
+    
+Utilizado para validar a expressão:
+    
+    bool  ValidateExpression(expression: string,normalizedText: string,isAnd: bool,isOr: bool)
+    
+Utilizado para contar as palavras:
+
+    Dictionary<string, int> CountWords()
 
 
 
