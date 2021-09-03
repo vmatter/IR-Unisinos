@@ -124,7 +124,7 @@ namespace SearchStringHandler
                         Console.Error.WriteLine("\n" + exception.ToString());
                         Console.ForegroundColor = ConsoleColor.White;
                         // TODO: Handle in a better way in the next version.
-                        Environment.Exit(0);
+                        continue;
                         // if (++countTentatives == maxTries) throw exception; //! Will be used in the next version of the code.
                     }
 
@@ -261,7 +261,6 @@ namespace SearchStringHandler
 
             } while (option != "5");
 
-            Console.Clear();
         }
 
 
