@@ -138,7 +138,6 @@ namespace SearchStringHandler
                         UseShellExecute = true
                     };
                     process.Start();
-
                 }
 
                 // TODO: Implement the .txt file reader {TestSearchStrings()} function that validades all search strings inside a test file.
@@ -258,6 +257,8 @@ namespace SearchStringHandler
                 }
 
             } while (option != "5");
+
+            Console.Clear();
 
         }
 

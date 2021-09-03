@@ -679,10 +679,10 @@ namespace SearchStringHandler
                     return false;
                 }
             }
-            else if (searchStringHandlerList.Count == 0)
+            /* else if (searchStringHandlerList.Count == 0)
             {
                 return false;
-            }
+            } */
 
             if (hasQuotationMarks)
             {
