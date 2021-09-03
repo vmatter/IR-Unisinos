@@ -73,20 +73,16 @@ namespace SearchStringHandler
 
                 using StreamWriter testFile = new(Directory.GetCurrentDirectory() + @"\pdfs\" + @"\testPdf.txt", append: false);
                 {
-                    Enumerable.Range(0, reader.NumberOfPages)
-                       .Skip(1)
-                        .ToList()
-                        .ForEach(i =>
+                    for (int i = 1; i <= reader.NumberOfPages; i++)
+                    {
+                        string aux = PdfTextExtractor.GetTextFromPage(reader, i);
+                        string[] linhas = aux.Split('\n');
+                        foreach (string linha in linhas)
                         {
-                            string aux = PdfTextExtractor.GetTextFromPage(reader, i);
-                            string[] linhas = aux.Split('\n');
-                            foreach (string linha in linhas)
-                            {
-                                pdfText.Append($"{linha}{"\n"}");
-                                testFile.WriteLine(linha);
-                            }
-
-                        });
+                            pdfText.Append($"{linha}{"\n"}");
+                            testFile.WriteLine(linha);
+                        }
+                    }
                 }
             }
 

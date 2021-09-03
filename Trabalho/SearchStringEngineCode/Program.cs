@@ -57,9 +57,9 @@ namespace SearchStringHandler
                     {
                         Console.Write("\n♦ Input a directory name inside CurrentDirectory() that contains PDF files (or use \"pdfs\" as default): ");
                         Console.Write("\n♦ The current path is: ");
-                        Console.Write(Directory.GetCurrentDirectory());
+                        Console.Write(Directory.GetCurrentDirectory() + @"\");
                         fileDirectory = Console.ReadLine();
-                        fileDirectoryValidation = Directory.GetCurrentDirectory() + fileDirectory;
+                        fileDirectoryValidation = Directory.GetCurrentDirectory() + @"\" + fileDirectory;
                         if (Directory.Exists(fileDirectoryValidation) is false)
                         {
                             Console.ForegroundColor = ConsoleColor.Red;
