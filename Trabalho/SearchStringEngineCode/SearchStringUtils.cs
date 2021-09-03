@@ -16,6 +16,7 @@ namespace SearchStringHandler
     */
     public static class SearchStringUtils
     {
+        private static string isValidCondition = "";
 
         #region TestSearchStrings
         /*
@@ -308,54 +309,54 @@ namespace SearchStringHandler
 
             for (int i = 0; i < searchStringTokens.Count; i++)
             {
-                if (searchStringTokens[i].Item2 == "True")
+                if ((searchStringTokens[i].Item1.Contains("and ")) || (searchStringTokens[i].Item1.Contains(" and ")) || (searchStringTokens[i].Item1.Contains(" and")) && (searchStringTokens[i].Item1 != "operator"))
                 {
-                    if ((searchStringTokens[i].Item1.Contains("and ")) || (searchStringTokens[i].Item1.Contains(" and ")) || (searchStringTokens[i].Item1.Contains(" and")) && (searchStringTokens[i].Item1 != "operator"))
-                    {
-                        expressionsSplitted = searchStringTokens[i].Item1.Split(new string[] { " and", " and ", "and " }, StringSplitOptions.RemoveEmptyEntries);
+                    expressionsSplitted = searchStringTokens[i].Item1.Split(new string[] { " and", " and ", "and " }, StringSplitOptions.RemoveEmptyEntries);
 
-                        foreach (string expressionWord in expressionsSplitted)
+                    foreach (string expressionWord in expressionsSplitted)
+                    {
+                        countRepeatedTokens = 0;
+                        foreach (string item in splittedText)
                         {
-                            countRepeatedTokens = 0;
-                            foreach (string item in splittedText)
+                            if (item.Equals(expressionWord.Trim()))
                             {
-                                if (item.Equals(expressionWord.Trim()))
-                                {
-                                    countRepeatedTokens++;
-                                }
-                            }
-                            if (repeatedTokensDictionary.ContainsKey(expressionWord.Trim()))
-                            {
-                                repeatedTokensDictionary[expressionWord.Trim()] += countRepeatedTokens;
-                            }
-                            else
-                            {
-                                repeatedTokensDictionary.Add(expressionWord.Trim(), countRepeatedTokens);
+                                countRepeatedTokens++;
                             }
                         }
-                    }
-                    else if ((searchStringTokens[i].Item1.Contains("or ")) || (searchStringTokens[i].Item1.Contains(" or ")) || (searchStringTokens[i].Item1.Contains(" or")) && (searchStringTokens[i].Item1 != "operator"))
-                    {
-
-                        expressionsSplitted = searchStringTokens[i].Item1.Split(new string[] { " or", " or ", "or " }, StringSplitOptions.RemoveEmptyEntries);
-                        foreach (string expressionWord in expressionsSplitted)
+                        if (repeatedTokensDictionary.ContainsKey(expressionWord.Trim()))
                         {
-                            countRepeatedTokens = 0;
-                            foreach (string item in splittedText)
+                            repeatedTokensDictionary[expressionWord.Trim()] += countRepeatedTokens;
+                        }
+                        else
+                        {
+                            repeatedTokensDictionary.Add(expressionWord.Trim(), countRepeatedTokens);
+                        }
+                    }
+                }
+                else if ((searchStringTokens[i].Item1.Contains("or ")) || (searchStringTokens[i].Item1.Contains(" or ")) || (searchStringTokens[i].Item1.Contains(" or")) && (searchStringTokens[i].Item1 != "operator"))
+                {
+
+                    expressionsSplitted = searchStringTokens[i].Item1.Split(new string[] { " or", " or ", "or " }, StringSplitOptions.RemoveEmptyEntries);
+                    foreach (string expressionWord in expressionsSplitted)
+                    {
+                        countRepeatedTokens = 0;
+
+
+                        foreach (string item in splittedText)
+                        {
+                            if (item.Equals(expressionWord.Trim()))
                             {
-                                if (item.Equals(expressionWord.Trim()))
-                                {
-                                    countRepeatedTokens++;
-                                }
+                                countRepeatedTokens++;
                             }
-                            if (repeatedTokensDictionary.ContainsKey(expressionWord.Trim()))
-                            {
-                                repeatedTokensDictionary[expressionWord.Trim()] += countRepeatedTokens;
-                            }
-                            else
-                            {
-                                repeatedTokensDictionary.Add(expressionWord.Trim(), countRepeatedTokens);
-                            }
+                        }
+
+                        if (repeatedTokensDictionary.ContainsKey(expressionWord.Trim()))
+                        {
+                            repeatedTokensDictionary[expressionWord.Trim()] += countRepeatedTokens;
+                        }
+                        else
+                        {
+                            repeatedTokensDictionary.Add(expressionWord.Trim(), countRepeatedTokens);
                         }
                     }
                 }
@@ -379,6 +380,7 @@ namespace SearchStringHandler
             report.AppendLine($"Número da consulta: {countQuery}");
             report.AppendLine($"Nome do documento: {fileName}");
             report.AppendLine($"String de busca: {searchString}");
+            report.AppendLine($"String de busca é válida: {isValidCondition}");
 
             var lastToken = searchTokensInDictionary.Last();
 
@@ -596,6 +598,58 @@ namespace SearchStringHandler
                             }
                         }
                     }
+                }
+            }
+
+            string operators = "";
+            string condition = "";
+
+            foreach (var expressions in expressionValidatorTuple)
+            {
+                if ((expressions.Item1.Contains(" and")) || (expressions.Item1.Contains(" and ")) || (expressions.Item1.Contains("and ")))
+                {
+                    if (expressions.Item2 == "operator")
+                    {
+                        operators += expressions.Item1;
+                    }
+                    else
+                    {
+                        condition += expressions.Item2;
+                    }
+                }
+                else if ((expressions.Item1.Contains(" or")) || (expressions.Item1.Contains(" or ")) || (expressions.Item1.Contains("or ")))
+                {
+                    if (expressions.Item2 == "operator")
+                    {
+                        operators += expressions.Item1;
+                    }
+                    else
+                    {
+                        condition += expressions.Item2;
+                    }
+                }
+            }
+
+            if (operators.Contains("and"))
+            {
+                if (condition.Contains("False"))
+                {
+                    isValidCondition = "False";
+                }
+                else
+                {
+                    isValidCondition = "True";
+                }
+            }
+            else
+            {
+                if (condition.Contains("True"))
+                {
+                    isValidCondition = "True";
+                }
+                else
+                {
+                    isValidCondition = "False";
                 }
             }
 
