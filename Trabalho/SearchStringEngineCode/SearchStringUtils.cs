@@ -134,7 +134,7 @@ namespace SearchStringHandler
         */
         public static bool ValidateStringExceptions(string searchStringCleaned)
         {
-            bool areValidParentheses = false;
+            bool isValidString = false;
             int countOpenParentheses = 0;
             int countClosedParentheses = 0;
 
@@ -155,10 +155,21 @@ namespace SearchStringHandler
             }
             else
             {
-                areValidParentheses = true;
+                isValidString = true;
             }
 
-            return areValidParentheses;
+            string[] searchStringSplitted = searchStringCleaned.Split(new string[] { " and", " and ", "and ", "or ", " or ", " or" }, StringSplitOptions.RemoveEmptyEntries);
+
+            if (searchStringSplitted.Length >= 1)
+            {
+                if (searchStringSplitted.Contains("and") || searchStringSplitted.Contains("or"))
+                {
+                    throw new InvalidOperationException("\nString de busca apresenta apenas operadores.");
+
+                }
+            }
+
+            return isValidString;
         }
         #endregion
 
@@ -206,6 +217,10 @@ namespace SearchStringHandler
                 {
                     if (hasQuotationMarks)
                     {
+                        if (stringValidator.Count() == 1)
+                        {
+                            searchStringHandlerList.Add("and");
+                        }
                         searchStringHandlerList.Add(quotationString);
                         hasQuotationMarks = false;
                         quotationString = "";
@@ -337,11 +352,10 @@ namespace SearchStringHandler
                 {
 
                     expressionsSplitted = searchStringTokens[i].Item1.Split(new string[] { " or", " or ", "or " }, StringSplitOptions.RemoveEmptyEntries);
+
                     foreach (string expressionWord in expressionsSplitted)
                     {
                         countRepeatedTokens = 0;
-
-
                         foreach (string item in splittedText)
                         {
                             if (item.Equals(expressionWord.Trim()))
@@ -359,6 +373,35 @@ namespace SearchStringHandler
                             repeatedTokensDictionary.Add(expressionWord.Trim(), countRepeatedTokens);
                         }
                     }
+                }
+                else
+                {
+                    expressionsSplitted = searchStringTokens[i].Item1.Split(" ", StringSplitOptions.RemoveEmptyEntries);
+
+                    foreach (string expressionWord in expressionsSplitted)
+                    {
+                        if ((!expressionWord.Trim().Equals("and")) && (!expressionWord.Equals("or")))
+                        {
+                            countRepeatedTokens = 0;
+                            foreach (string item in splittedText)
+                            {
+                                if (item.Equals(expressionWord.Trim()))
+                                {
+                                    countRepeatedTokens++;
+                                }
+                            }
+
+                            if (repeatedTokensDictionary.ContainsKey(expressionWord.Trim()))
+                            {
+                                repeatedTokensDictionary[expressionWord.Trim()] += countRepeatedTokens;
+                            }
+                            else
+                            {
+                                repeatedTokensDictionary.Add(expressionWord.Trim(), countRepeatedTokens);
+                            }
+                        }
+                    }
+
                 }
             }
 

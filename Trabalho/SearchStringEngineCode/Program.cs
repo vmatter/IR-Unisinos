@@ -14,7 +14,7 @@ namespace SearchStringHandler
         public static void Main(string[] args)
         {
             //* Variables that are used in the menu and in the ExecuteProgram function.
-            string searchStringInput = "and";
+            string searchStringInput = "banana or Mineração";
             int countQuery = 1;
             string option = "";
             string fileName = "";
@@ -119,7 +119,9 @@ namespace SearchStringHandler
             }
             catch (System.Exception exception)
             {
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.Error.WriteLine("\n" + exception.ToString());
+                Console.ForegroundColor = ConsoleColor.White;
                 // TODO: Handle in a better way in the next version.
                 Environment.Exit(0);
                 // if (++countTentatives == maxTries) throw exception; //! Will be used in the next version of the code.
