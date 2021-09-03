@@ -8,19 +8,22 @@ using iTextSharp.text.pdf;
 using iTextSharp.text.pdf.parser;
 using System.Text.RegularExpressions;
 using iTextSharp.text;
-using System.Diagnostics;
 
 namespace SearchStringHandler
 {
-    // TODO: Documentar.
-    // TODO: Criar uma função de split que mantém o separador. Tentar criar outro método sem regex.
+    /*
+     * Class that contains functions to deal with search strings.
+    */
     public static class SearchStringUtils
     {
 
         #region TestSearchStrings
+        /*
+         * Function responsible for reading search strings from a .txt file. 
+         TODO: (Future work) - Will be used in the option '2' to read search string from a .txt file.
+        */
         public static string TestSearchStrings(string fileDirectory = "searchStrings", string fileName = "searchStrings")
         {
-
             string filePath = "";
             StringBuilder pdfText = new StringBuilder();
 
@@ -36,7 +39,6 @@ namespace SearchStringHandler
             // Read file using StreamReader. Reads file line by line    
             using (StreamReader file = new StreamReader(filePath))
             {
-                int counter = 0;
                 string searchString;
 
                 while ((searchString = file.ReadLine()) != null)
@@ -44,19 +46,21 @@ namespace SearchStringHandler
                     Console.WriteLine(searchString);
                 }
                 file.Close();
-                //Console.WriteLine($ "File has {counter} lines.");
             }
 
             return "";
         }
         #endregion
 
-        #region ReadTextInPdf
-        public static string ReadTextInPdf(string fileDirectory, string fileName)
+        #region ReadTextFromPdf
+        /*
+         * Reads the text from a PDF file and creates the PDF text in the verifyPdfText.txt file inside \tests.
+        */
+        public static string ReadTextFromPdf(string fileDirectory, string fileName)
         {
-            // TODO: Adicionar o diretorio escolhido, directoryName.
             string filePath = "";
             StringBuilder pdfText = new StringBuilder();
+
             if (!fileName.Contains(".pdf"))
             {
                 filePath = Directory.GetCurrentDirectory() + $@"\{fileDirectory}\" + fileName + ".pdf";
@@ -66,12 +70,9 @@ namespace SearchStringHandler
                 filePath = Directory.GetCurrentDirectory() + $@"\{fileDirectory}\" + fileName;
             }
 
-
-
             using (PdfReader reader = new PdfReader(filePath))
             {
-
-                using StreamWriter testFile = new(Directory.GetCurrentDirectory() + @"\pdfs\" + @"\testPdf.txt", append: false);
+                using StreamWriter testFile = new(Directory.GetCurrentDirectory() + @"\tests\" + @"\verifyPdfText.txt", append: false);
                 {
                     for (int i = 1; i <= reader.NumberOfPages; i++)
                     {
@@ -92,8 +93,8 @@ namespace SearchStringHandler
 
         #region NormalizeAndCleanText
         /*
-         * Method responsible for removing unnecessary characters from the search string.
-          @see https://stackoverflow.com/questions/11395775/clean-the-string-is-there-any-better-way-of-doing-it
+         * Fuction responsible for removing unnecessary characters from the search string.
+         * @see https://stackoverflow.com/questions/11395775/clean-the-string-is-there-any-better-way-of-doing-it
         */
         public static string NormalizeAndCleanText(string textString)
         {
@@ -119,9 +120,7 @@ namespace SearchStringHandler
                     {
                         textCleaned += normalizedSearchString[i];
                     }
-
                 }
-
             }
 
             return textCleaned.Normalize(NormalizationForm.FormC);
@@ -129,13 +128,14 @@ namespace SearchStringHandler
         #endregion
 
         #region ValidateStringExceptions
+        /*
+         * Function that validates the strings expressions.
+        */
         public static bool ValidateStringExceptions(string searchStringCleaned)
         {
             bool areValidParentheses = false;
             int countOpenParentheses = 0;
             int countClosedParentheses = 0;
-
-            // TODO: Validar se a string for vazia.
 
             if (searchStringCleaned.Length > 0)
             {
@@ -162,16 +162,16 @@ namespace SearchStringHandler
         #endregion
 
         #region TokenizeSearchString
-        //* Method responsible for tokenizing the search string.
-        // @see https://stackoverflow.com/questions/16265247/printing-all-contents-of-array-in-c-sharp
-        //Console.WriteLine("\n[" + string.Join(", ", splits) + "]\n");
+        /* 
+         * Function responsible for tokenizing the search string.
+         * @see https://stackoverflow.com/questions/16265247/printing-all-contents-of-array-in-c-sharp
+        */
         public static List<string> TokenizeSearchString(string searchStringCleaned)
         {
 
-            List<string> searchStringHandlerList = new List<string>();
-
             string[] stringValidator = searchStringCleaned.Trim().Split(" ");
 
+            List<string> searchStringHandlerList = new List<string>();
             bool hasQuotationMarks = false;
             string quotationString = "";
             string searchWord = "";
@@ -220,8 +220,11 @@ namespace SearchStringHandler
         }
         #endregion
 
-        #region SeparateExpressions
-        public static List<List<string>> SeparateExpressions(List<string> searchStringTokens)
+        #region SeparateExpressionsFromParentheses
+        /*
+         * Function that separates the expressions from parentheses.
+        */
+        public static List<List<string>> SeparateExpressionsFromParentheses(List<string> searchStringTokens)
         {
             string regexString = string.Join(" ", searchStringTokens);
 
@@ -263,8 +266,11 @@ namespace SearchStringHandler
         }
         #endregion
 
-        #region FindExpressionsInPdf
-        public static Dictionary<string, int> FindExpressionsInPdf(List<Tuple<string, string>> searchStringTokens, string pdfText)
+        #region CountSearchTokensInPdf
+        /*
+         * Function that counts the search strings in the PDF file.
+        */
+        public static Dictionary<string, int> CountSearchTokensInPdf(List<Tuple<string, string>> searchStringTokens, string pdfText)
         {
 
             Dictionary<string, int> repeatedTokensDictionary = new Dictionary<string, int>();
@@ -360,11 +366,14 @@ namespace SearchStringHandler
         #endregion
 
         #region GenerateReport
-        public static void GenerateReport(int countQuery, string fileName, string searchString, Dictionary<string, int> searchTokensInDictionary)
+        /*
+        * Function that generates the report containing the general results of the string search.
+        */
+        public static string GenerateReport(int countQuery, string fileName, string searchString, Dictionary<string, int> searchTokensInDictionary)
         {
-            var report = new StringBuilder();
+            StringBuilder report = new StringBuilder();
 
-            var occurrences = new StringBuilder();
+            StringBuilder occurrences = new StringBuilder();
 
             report.AppendLine("\n\n*****************************************");
             report.AppendLine($"Número da consulta: {countQuery}");
@@ -384,29 +393,31 @@ namespace SearchStringHandler
                     occurrences.Append($"{token.Key}({token.Value})");
                 }
             }
+
             report.AppendLine($"Ocorrências: {occurrences}");
             report.AppendLine("*****************************************");
 
             string directoryPath = $@"{Directory.GetCurrentDirectory()}\generatedReport";
 
+            // Handles writing in the .txt file.
             File.AppendAllText($@"{directoryPath}\generatedReport.txt", report.ToString());
 
+            // Handles writing in the .pdf file.
             StreamReader txtReport = new StreamReader($@"{directoryPath}\generatedReport.txt");
-
             Document pdfReport = new Document();
-
             PdfWriter.GetInstance(pdfReport, new FileStream($@"{directoryPath}\generatedReport.pdf", FileMode.Create));
-
             pdfReport.Open();
-
             pdfReport.Add(new Paragraph(txtReport.ReadToEnd()));
-
             pdfReport.Close();
 
-            Console.WriteLine("\n" + report);
+            return report.ToString();
         }
         #endregion
+
         #region PrintOutputs
+        /*
+         * Function responsible for handling the print outputs of different functions.
+        */
         public static void PrintOutputs<T>(string outputName, string outputPrimitive = null, List<T> outputList = null, List<List<T>> outputListOfLists = null, Dictionary<string, int> outputDictionary = null)
         {
             if (outputPrimitive != null)
@@ -449,8 +460,6 @@ namespace SearchStringHandler
             {
                 StringBuilder dictionaryOutput = new StringBuilder();
 
-                //TODO: trocar por dicionário ordenado...
-
                 string lastDictionaryKey = outputDictionary.Keys.Last().ToString();
 
                 foreach (var token in outputDictionary)
@@ -466,24 +475,27 @@ namespace SearchStringHandler
                     }
                 }
                 Console.WriteLine($"\n{outputName} ({dictionaryOutput.GetType().Name})\t-->\t[{dictionaryOutput}]");
-
             }
         }
         #endregion
 
         #region VerifyExpressions
+        /*
+         * Function that verifies the expressions in order to validate which ones should be printed. 
+         TODO: (Future Workd) - This function can be optimized to a binary tree, now it is not working properly.
+        */
         public static List<Tuple<string, string>> VerifyExpressions(List<List<string>> searchStringTokens, string pdfText)
         {
 
-            string normalizedText = NormalizeAndCleanText(pdfText);
             bool isAnd = false;
             bool isOr = false;
             string keyExpression = "";
+            string auxString = "";
             List<Tuple<string, string>> expressionValidatorTuple = new List<Tuple<string, string>>();
 
-            List<string> lastExpression = searchStringTokens.Last();
+            string normalizedText = NormalizeAndCleanText(pdfText);
 
-            string auxString = "";
+            List<string> lastExpression = searchStringTokens.Last();
 
             foreach (List<string> expression in searchStringTokens)
             {
@@ -569,8 +581,6 @@ namespace SearchStringHandler
                             }
                             else
                             {
-                                // TODO: Revisar esse caso onde só sobra uma palavra, talvez não precise ver se é and ou or
-                                // TODO: só verificar se a palavra existe.
                                 auxString = expression[i - 1];
 
                                 if (auxString == "and")
@@ -586,13 +596,15 @@ namespace SearchStringHandler
                     }
                 }
             }
-            // TODO: Procurar FileSeparator.
 
             return expressionValidatorTuple;
         }
         #endregion
 
         #region ValidateExpression
+        /*
+         * Function that validates if the expression is valid or not.
+        */
         private static bool ValidateExpression(string expression, string normalizedText, bool isAnd = false, bool isOr = false)
         {
             bool isValidExpression = true;
@@ -644,6 +656,10 @@ namespace SearchStringHandler
         #endregion
 
         #region AddAndValidation
+
+        /*
+         * Function that contains all validations to add "and" to words that does not contain an operator.
+        */
         private static bool AddAndValidation(List<string> searchStringHandlerList, string searchWord, bool hasQuotationMarks)
         {
 
@@ -676,4 +692,14 @@ namespace SearchStringHandler
         }
         #endregion
     }
+    // TODO: List of TODOs of the project that will be implemented in a not so distant future.
+    // TODO: Implement the option '2' of the menu that will load the search strings from a .txt file (TestSearchStrings function).
+    // TODO: Add better commentaries to ensure the documentation quality.
+    // TODO: Implement a Split function that keeps the separator. 
+    // TODO: Try to SeparateExpressions without using Regex.
+    // TODO: Verify if C# has an implementation of FileSeparator like Java.
+    // TODO: Change the dictionary to an OrderedDictionary.
+    // TODO: Rework the VerifyExpressions using a BinaryTree.
+    // TODO: Review all the code after Marcio`s reivions.
+    // TODO: Validate if all files and directories exists else create them.
 }
