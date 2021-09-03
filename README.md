@@ -67,5 +67,35 @@ Utilizado para contar as palavras:
 
     Dictionary<string, int> CountWords()
 
+   ## Método usado em tempo de execução
+Utilizado para montar o menu:
+    void  ShowMenu()
+    
+    Opções do Menu:
 
+	Opção 1: Manual Search -> Utilizada para digitar uma string no software.
+	Opção 3: Search using TXT. File -> Utilizada para referenciar o local de um arquivo TXT com as strings de busca.
+	Opção 5: Exit -> Utilizado para encerrar o programa.
+
+
+**Opção 1**:
+
+ - Solicita a String de busca;
+ - Executa a validação do diretório;
+ - Executa a validação e verifica se o arquivo PDF informado existe;
+ - Gera o relatório;
+ - Apresenta para o usuário o resultado da busca;
+
+**Opção 3** :
+
+ - Executa a validação do diretório do TXT de busca;
+ - Executa a validação e verifica se o arquivo TXT informado existe;
+ - Executa a validação do diretório;
+ - Executa a validação e verifica se o arquivo PDF informado existe;
+ - Gera o relatório;
+ - Apresenta para o usuário o resultado da busca;
+
+**Opção 5** :
+
+ - Finaliza a execução do programa;
 
