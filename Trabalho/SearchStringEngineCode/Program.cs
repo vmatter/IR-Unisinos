@@ -257,16 +257,15 @@ namespace SearchStringHandler
                      } while (choosenFile == "");
                  } */
 
-                else if (option == 2)
+                else if (option == "2")
                 {
-                    private static SQLiteConnection sqliteConnection;
+                    SQLiteConnection sqliteConnection;
 
-                    SQLiteConnection.DBConnection("C:\Users\Junior Backes\Documents\Unisinos\CursoEXT\Repositorio_atualizar\IR-Unisinos\Trabalho\SearchStringEngineCode\Search.db");
+                    SQLiteConnection.DBConnection(@"C:\Users\Junior Backes\Documents\Unisinos\CursoEXT\Repositorio_atualizar\IR-Unisinos\Trabalho\SearchStringEngineCode\Search.db");
 
                     SQLiteConnection.CreateDB("Test");
 
                     Console.WriteLine ("Cheguei ao fim da Option 2");
-
                 }
 
                 else
