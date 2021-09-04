@@ -46,12 +46,13 @@ namespace SearchStringHandler
         {
             string Fname = Fnamee;
             string SWord = SWordd;
+
             //TODO: Verify SQL return, and do a IF condition to prevent duplicate words.
             using (var cmd = sqliteConnection.CreateCommand())
             {
                 cmd.CommandText = "SELECT COUNT(*) FROM FileData WHERE File LIKE '@FName' AND SearchWord LIKE '@SWord';";
-                cmd.Parameters.AddWithValue(@FName,Fname);
-                cmd.Parameters.AddWithValue(@SWord,SWord);
+                cmd.Parameters.Add(@FName);
+                cmd.Parameters.Add(@SWord);
                 cmd.ExecuteNonQuery();
             }
         }
@@ -66,9 +67,9 @@ namespace SearchStringHandler
             {
                 cmd.CommandText = @"INSERT INTO FileData(File, SearchWord, NumberRep) values (@FName, @SWord, @NRep);";
 
-                cmd.Parameters.AddWithValue(@FName,Fname);
-                cmd.Parameters.AddWithValue(@SWord,SWord);
-                cmd.Parameters.AddWithValue(@NRep,NRep);
+                cmd.Parameters.Add(@FName);
+                cmd.Parameters.Add(@SWord);
+                cmd.Parameters.Add(@NRep);
                 cmd.ExecuteNonQuery();
             }
         }
