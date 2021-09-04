@@ -39,7 +39,7 @@ namespace SearchStringHandler
             {
                 ShowMenu();
 
-                while (option != "1" && option != "5")
+                while (option != "1" && option != "2" && option != "5")
                 {
                     Console.Write("ENTER A VALID OPTION: ");
                     option = Console.ReadLine();
@@ -257,6 +257,18 @@ namespace SearchStringHandler
                      } while (choosenFile == "");
                  } */
 
+                else if (option == 2)
+                {
+                    private static SQLiteConnection sqliteConnection;
+
+                    SQLiteConnection.DBConnection("C:\Users\Junior Backes\Documents\Unisinos\CursoEXT\Repositorio_atualizar\IR-Unisinos\Trabalho\SearchStringEngineCode\Search.db");
+
+                    SQLiteConnection.CreateDB("Test");
+
+                    Console.WriteLine ("Cheguei ao fim da Option 2");
+
+                }
+
                 else
                 {
                     Console.Clear();
@@ -282,6 +294,10 @@ namespace SearchStringHandler
             Console.WriteLine("╔═════════════════ OPTION MENU ═════════════════╗    ");
 
             Console.WriteLine("║ 1 - MANUAL SEARCH                             ║    ");
+            
+            Console.WriteLine("║                                               ║    ");
+
+            Console.WriteLine("║ 2 - DB OPTIONS                                ║    ");
 
             Console.WriteLine("║                                               ║    ");
 

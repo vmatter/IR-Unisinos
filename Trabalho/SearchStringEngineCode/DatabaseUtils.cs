@@ -21,11 +21,12 @@ namespace SearchStringHandler
 
         // Use SQLite site to create tables and 
         private static void CreateDB (string nome){
-            SQLiteConnection.CreateFile(nome);
+            //SQLiteConnection.CreateFile(nome);
             using (var cmd = sqliteConnection.CreateComand())
             {
-                cmd.CommandText = "CREATE TABLE IF NOT EXISTS FileData(File Varchar(40), SearchWord Varchar(30), NumberRep int)"
-
+                cmd.CommandText = "CREATE TABLE WORDS (ID INTEGER NOT NULL, WORD VARCHAR, PRIMARY KEY(ID AUTOINCREMENT));"
+                cmd.CommandText = "CREATE TABLE FILES (ID INTEGER NOT NULL, FILENAME VARCHAR, PRIMARY KEY(ID AUTOINCREMENT));"
+                cmd.CommandText = "CREATE TABLE WORDSANDFILES (ID INTEGER NOT NULL, WORD_ID INTEGER NOT NULL, FILE_ID INTEGER NOT NULL, OCCURRENCES	INTEGER NOT NULL, FOREIGN KEY(FILE_ID) REFERENCES FILES, PRIMARY KEY(ID AUTOINCREMENT), FOREIGN KEY(WORD_ID) REFERENCES WORDS);"
             }
         }
 
