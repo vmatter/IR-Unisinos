@@ -4,6 +4,7 @@ using System.Text;
 using System.IO;
 using System.Diagnostics;
 
+//Teste
 namespace SearchStringHandler
 {
     /*
