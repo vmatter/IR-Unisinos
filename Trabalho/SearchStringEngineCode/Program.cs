@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using System.Diagnostics;
+using System.Data;
+using System.Data.SQLite;
 
 //Teste
 namespace SearchStringHandler

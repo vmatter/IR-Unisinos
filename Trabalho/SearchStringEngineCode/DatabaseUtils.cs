@@ -11,14 +11,24 @@ namespace SearchStringHandler
         //Create the conection with Database
         private static SQLiteConnection sqliteConnection;
 
+        // Connect DB
         private static void DBConnection (string path){
             sqliteConnection = new SQLiteConnection(path);
             sqliteConnection.Open();
 
         }
-
+        // Use SQLite site to create tables and 
         private static void CreateDB (string nome){
-        SQLiteConnection.CreateFile(nome);
+            SQLiteConnection.CreateFile(nome);
+        }
+
+        private static void ReadDB()
+        {
+            using (var cmd = new System.Data.SQLite.SQLiteCommand(sqliteConnection))
+            {
+                
+            }
+
         }
 
 
