@@ -473,6 +473,11 @@ namespace SearchStringHandler
 
             string directoryPath = $@"{Directory.GetCurrentDirectory()}\generatedReport";
 
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+            }
+
             Process[] runningProcesses = Process.GetProcesses();
 
             Process processRunning = new Process();
