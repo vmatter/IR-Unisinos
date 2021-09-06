@@ -9,9 +9,6 @@ using iTextSharp.text.pdf.parser;
 using System.Text.RegularExpressions;
 using iTextSharp.text;
 using System.Diagnostics;
-using System.Timers;
-using System.Runtime;
-using System.Threading.Tasks;
 using System.Threading;
 
 namespace SearchStringHandler
