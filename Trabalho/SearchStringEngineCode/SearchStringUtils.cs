@@ -78,7 +78,14 @@ namespace SearchStringHandler
 
             using (PdfReader reader = new PdfReader(filePath))
             {
-                using StreamWriter testFile = new(Directory.GetCurrentDirectory() + @"\tests\" + @"\verifyPdfText.txt", append: false);
+                string testDirectoryPath = $@"{Directory.GetCurrentDirectory()}\tests";
+
+                if (!Directory.Exists(testDirectoryPath))
+                {
+                    Directory.CreateDirectory(testDirectoryPath);
+                }
+
+                using StreamWriter testFile = new($@"{testDirectoryPath}\verifyPdfText.txt", append: false);
                 {
                     for (int i = 1; i <= reader.NumberOfPages; i++)
                     {
